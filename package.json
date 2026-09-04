@@ -1,0 +1,143 @@
+{
+  "name": "xiaotao-knowledge",
+  "productName": "晓桃终生成长",
+  "version": "0.1.0",
+  "private": true,
+  "description": "晓桃终生成长 - 个人知识管理系统",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "setup:prisma": "node scripts/setup-prisma.mjs",
+    "prebuild": "node scripts/setup-prisma.mjs && prisma generate",
+    "predev": "node scripts/setup-prisma.mjs",
+    "postinstall": "prisma generate",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "db:generate": "prisma generate",
+    "electron:dev": "concurrently -k \"npm:dev\" \"wait-on tcp:3000 && cross-env NODE_ENV=development electron .\"",
+    "electron:build": "npm run build && electron-builder",
+    "electron:build:mac": "npm run build && electron-builder --mac",
+    "electron:build:win": "npm run build && electron-builder --win",
+    "electron:build:linux": "npm run build && electron-builder --linux"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.18.0",
+    "@tiptap/core": "^2.6.6",
+    "@tiptap/extension-code-block-lowlight": "^2.6.6",
+    "@tiptap/extension-image": "^2.6.6",
+    "@tiptap/extension-link": "^2.6.6",
+    "@tiptap/extension-placeholder": "^2.6.6",
+    "@tiptap/pm": "^2.6.6",
+    "@tiptap/react": "^2.6.6",
+    "@tiptap/starter-kit": "^2.6.6",
+    "bcryptjs": "^3.0.3",
+    "clsx": "^2.1.1",
+    "dayjs": "^1.11.12",
+    "jszip": "^3.10.1",
+    "lowlight": "^3.1.0",
+    "lucide-react": "^0.424.0",
+    "marked": "^18.0.11",
+    "nanoid": "^5.0.7",
+    "next": "14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "sharp": "^0.35.4",
+    "zustand": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20.14.14",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^10.0.5",
+    "cross-env": "^10.1.0",
+    "electron": "^44.2.0",
+    "electron-builder": "^26.15.3",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.5",
+    "isomorphic-dompurify": "^3.19.0",
+    "postcss": "^8.4.41",
+    "prisma": "^5.18.0",
+    "tailwindcss": "^3.4.9",
+    "typescript": "^5.5.4",
+    "wait-on": "^9.1.0"
+  },
+  "build": {
+    "appId": "com.xiaotao.knowledge",
+    "productName": "晓桃终生成长",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "extraResources": [
+      {
+        "from": ".next",
+        "to": "server/.next"
+      },
+      {
+        "from": "public",
+        "to": "server/public"
+      },
+      {
+        "from": "prisma",
+        "to": "server/prisma"
+      },
+      {
+        "from": "electron/server.js",
+        "to": "server/server.js"
+      },
+      {
+        "from": "node_modules",
+        "to": "server/node_modules",
+        "filter": [
+          "next/**",
+          "@prisma/**",
+          "react/**",
+          "react-dom/**"
+        ]
+      }
+    ],
+    "files": [
+      "electron/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "public/icon-mac.png"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "public/icon-win.png"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Office",
+      "icon": "public/icon-linux.png"
+    }
+  }
+}

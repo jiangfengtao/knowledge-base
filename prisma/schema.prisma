@@ -1,0 +1,177 @@
+// Knowledge base database schema
+// SQLite for local-first, can switch to PostgreSQL for sync server
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// 用户
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String?
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  knowledgeBases KnowledgeBase[]
+  documents      Document[]
+  notes          Note[]
+  tags           Tag[]
+  settings       UserSettings?
+}
+
+// 知识库
+model KnowledgeBase {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  icon        String?
+  color       String?
+  // 数字分类编号，如 "00", "01"
+  categoryCode String?
+  // 父知识库ID，支持层级
+  parentId    String?
+  parent      KnowledgeBase? @relation("KbChildren", fields: [parentId], references: [id], onDelete: Cascade)
+  children    KnowledgeBase[] @relation("KbChildren")
+  // 排序
+  sortOrder   Int      @default(0)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  documents Document[]
+
+  @@index([userId])
+  @@index([parentId])
+}
+
+// 文档
+model Document {
+  id             String   @id @default(cuid())
+  title          String
+  // 文档内容，HTML 格式（Tiptap 输出）
+  content        String   @default("")
+  // 纯文本摘要，用于搜索和预览
+  plainText      String   @default("")
+  // 字数
+  wordCount      Int      @default(0)
+  knowledgeBaseId String
+  knowledgeBase  KnowledgeBase @relation(fields: [knowledgeBaseId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  // 是否收藏
+  isFavorite     Boolean  @default(false)
+  // 是否公开（前台展示站可见）
+  isPublic       Boolean  @default(false)
+  // 排序
+  sortOrder      Int      @default(0)
+  // 同步用：最后修改时间
+  lastModifiedAt DateTime @default(now())
+  // 同步用：版本号
+  version        Int      @default(1)
+  // 是否删除（软删除）
+  isDeleted      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  tags DocumentTag[]
+
+  @@index([knowledgeBaseId])
+  @@index([userId])
+  @@index([lastModifiedAt])
+  @@index([isDeleted])
+}
+
+// 小记
+model Note {
+  id         String   @id @default(cuid())
+  content    String
+  // 纯文本，用于搜索
+  plainText  String
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  isPinned   Boolean  @default(false)
+  lastModifiedAt DateTime @default(now())
+  version    Int      @default(1)
+  isDeleted  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  tags NoteTag[]
+
+  @@index([userId])
+  @@index([lastModifiedAt])
+}
+
+// 标签
+model Tag {
+  id        String   @id @default(cuid())
+  name      String
+  color     String?
+  userId    String
+  parentId  String?
+  parent    Tag?     @relation("TagHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children  Tag[]   @relation("TagHierarchy")
+  sortOrder Int     @default(0)
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  documents DocumentTag[]
+  notes     NoteTag[]
+
+  @@unique([userId, parentId, name])
+}
+
+// 文档-标签 关联
+model DocumentTag {
+  documentId String
+  tagId      String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([documentId, tagId])
+}
+
+// 小记-标签 关联
+model NoteTag {
+  noteId String
+  tagId  String
+  note   Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([noteId, tagId])
+}
+
+// 同步状态记录
+model SyncState {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  // 最后一次同步的时间戳
+  lastSyncAt   DateTime @default(now())
+  // 设备ID
+  deviceId     String?
+  // 同步的实体类型和最新游标（JSON 存储）
+  cursors      String?  // JSON string
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// 用户设置
+model UserSettings {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  // 设置内容，JSON 格式（AI 配置、主题偏好等）
+  settings  String?  // JSON string
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
