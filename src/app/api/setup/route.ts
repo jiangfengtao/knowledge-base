@@ -3,6 +3,10 @@ import prisma from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
 import { generateToken } from "@/lib/auth";
 
+// 需要较长时间来创建所有数据
+export const maxDuration = 60;
+export const dynamic = "force-dynamic";
+
 /**
  * 生产环境数据库初始化接口
  * 创建默认用户 + 知识库结构 + 自媒体知识库内容
@@ -123,7 +127,14 @@ export async function POST(request: Request) {
   }
 }
 
-// === 自媒体知识库种子数据 ===
+export async function GET(request: Request) {
+  return POST(request);
+}
+
+// 兼容 GET 请求，方便浏览器直接访问触发
+export async function HEAD(request: Request) {
+  return POST(request);
+}
 async function seedMediaKnowledge(userId: string, mediaRootId: string, results: string[]) {
   // 幂等工具函数
   const findOrCreateTag = async (name: string, color: string = "#4ECDC4") => {
