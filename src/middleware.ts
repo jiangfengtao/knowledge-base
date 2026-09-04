@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import crypto from "crypto";
 
 // 不需要认证的 API 路由
 const PUBLIC_API_ROUTES = [
   "/api/auth/login",
   "/api/auth/register",
+  "/api/auth/logout",
   "/api/seed",
   "/api/webhook",
 ];
@@ -15,11 +15,13 @@ const TOKEN_EXPIRY_MS = 30 * 24 * 60 * 60 * 1000;
 const SECRET = process.env.AUTH_SECRET || "xiaotao-dev-secret-change-in-prod";
 
 /**
- * 验证 token（与 lib/auth.ts 中的逻辑一致）
+ * 使用 Web Crypto API 验证 token（Edge Runtime 兼容）
+ * 格式：base64(userId:timestamp:hmac)
  */
-function verifyToken(token: string): string | null {
+async function verifyToken(token: string): Promise<string | null> {
   try {
-    const decoded = Buffer.from(token, "base64").toString("utf-8");
+    // atob 在 Edge Runtime 中可用
+    const decoded = atob(token);
     const parts = decoded.split(":");
     if (parts.length !== 3) return null;
 
@@ -28,11 +30,27 @@ function verifyToken(token: string): string | null {
 
     if (Date.now() - timestamp > TOKEN_EXPIRY_MS) return null;
 
+    // 使用 Web Crypto API 计算 HMAC
+    const encoder = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      "raw",
+      encoder.encode(SECRET),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"]
+    );
+
     const payload = `${userId}:${timestamp}`;
-    const expectedHmac = crypto
-      .createHmac("sha256", SECRET)
-      .update(payload)
-      .digest("hex");
+    const signature = await crypto.subtle.sign(
+      "HMAC",
+      key,
+      encoder.encode(payload)
+    );
+
+    // 将签名转为 hex 字符串
+    const expectedHmac = Array.from(new Uint8Array(signature))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
 
     if (hmac !== expectedHmac) return null;
 
@@ -42,7 +60,7 @@ function verifyToken(token: string): string | null {
   }
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 只拦截 /api/* 路由
@@ -76,7 +94,7 @@ export function middleware(request: NextRequest) {
     );
   }
 
-  const userId = verifyToken(token);
+  const userId = await verifyToken(token);
   if (!userId) {
     return NextResponse.json(
       { success: false, error: "登录已过期，请重新登录" },

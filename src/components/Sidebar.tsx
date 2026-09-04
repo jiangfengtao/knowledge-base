@@ -122,7 +122,10 @@ export default function Sidebar({ activeNav, onNavChange, onKbSelect }: SidebarP
 
   const loadKnowledgeBases = useCallback(async () => {
     try {
-      const res = await fetch("/api/knowledge-bases");
+      const token = localStorage.getItem("auth_token") || "";
+      const res = await fetch("/api/knowledge-bases", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const data = await res.json();
       const kbs: KnowledgeBase[] = data.data || [];
       setKnowledgeBases(kbs);

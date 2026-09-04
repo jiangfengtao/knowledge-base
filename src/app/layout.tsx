@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "@/styles/globals.css";
+import AuthFetchProvider from "@/components/AuthFetchProvider";
 
 export const metadata: Metadata = {
   title: "晓桃终生成长",
@@ -36,7 +37,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN">
-      <body>{children}</body>
+      <body>
+        <AuthFetchProvider>{children}</AuthFetchProvider>
+      </body>
     </html>
   );
 }

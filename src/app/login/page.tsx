@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import {
   BookOpen,
   Mail,
@@ -17,7 +16,6 @@ import {
 import clsx from "clsx";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [mode, setMode] = useState<"login" | "register">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,14 +24,36 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [checking, setChecking] = useState(true);
 
-  // 如果已登录，跳转首页
+  // 如果已登录且 token 有效，跳转首页
   useEffect(() => {
     const token = localStorage.getItem("auth_token");
-    if (token) {
-      router.replace("/");
+    if (!token) {
+      setChecking(false);
+      return;
     }
-  }, [router]);
+
+    // 先验证 token 是否有效，避免无效 token 导致跳转循环
+    fetch("/api/knowledge-bases", { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => {
+        if (res.ok) {
+          // token 有效，跳转首页
+          window.location.href = "/";
+        } else {
+          // token 无效，清除并留在登录页
+          localStorage.removeItem("auth_token");
+          localStorage.removeItem("user_info");
+          setChecking(false);
+        }
+      })
+      .catch(() => {
+        // 网络错误，清除 token 留在登录页
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("user_info");
+        setChecking(false);
+      });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,7 +96,9 @@ export default function LoginPage() {
         localStorage.setItem("auth_token", data.token);
         localStorage.setItem("user_info", JSON.stringify(data.user));
         setSuccess(mode === "login" ? "登录成功，正在跳转..." : "注册成功，正在跳转...");
-        setTimeout(() => router.replace("/"), 800);
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 800);
       } else {
         setError(data.error || "操作失败");
       }
@@ -86,6 +108,17 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  if (checking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f5f6f7] via-white to-[#e8f5f0]">
+        <div className="text-center">
+          <Loader2 size={32} className="animate-spin text-accent mx-auto mb-2" />
+          <p className="text-sm text-muted">正在检查登录状态...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f5f6f7] via-white to-[#e8f5f0] px-4 py-8">
@@ -277,7 +310,9 @@ export default function LoginPage() {
                   localStorage.setItem("auth_token", data.token);
                   localStorage.setItem("user_info", JSON.stringify(data.user));
                   setSuccess("正在进入体验模式...");
-                  setTimeout(() => router.replace("/"), 600);
+                  setTimeout(() => {
+                    window.location.href = "/";
+                  }, 600);
                 } else {
                   // 如果访客账号不存在，自动注册
                   const regRes = await fetch("/api/auth/register", {
@@ -294,7 +329,9 @@ export default function LoginPage() {
                     localStorage.setItem("auth_token", regData.token);
                     localStorage.setItem("user_info", JSON.stringify(regData.user));
                     setSuccess("正在进入体验模式...");
-                    setTimeout(() => router.replace("/"), 600);
+                    setTimeout(() => {
+                      window.location.href = "/";
+                    }, 600);
                   } else {
                     setError("体验模式失败，请手动注册");
                   }

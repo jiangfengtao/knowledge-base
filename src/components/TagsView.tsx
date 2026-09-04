@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { apiFetch } from "@/lib/api-fetch";
 import {
   Tag as TagIcon,
   Plus,
@@ -92,8 +93,16 @@ export default function TagsView() {
 
   const loadTags = useCallback(async () => {
     setLoading(true);
+    setError("");
     try {
-      const res = await fetch("/api/tags");
+      const token = localStorage.getItem("auth_token") || "";
+      const res = await fetch("/api/tags", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        setError(`加载标签失败 (HTTP ${res.status})，请刷新页面重试`);
+        return;
+      }
       const data = await res.json();
       if (data.success) {
         setTags(data.data || []);
@@ -108,9 +117,11 @@ export default function TagsView() {
         };
         expandAll(data.data || []);
         setExpandedTags(expand);
+      } else {
+        setError(data.error || "加载标签失败");
       }
     } catch (e) {
-      console.error("Load tags error:", e);
+      setError("网络错误，请检查网络连接后重试");
     } finally {
       setLoading(false);
     }
@@ -137,9 +148,8 @@ export default function TagsView() {
   const createTag = async (name: string, color: string | null, parentId: string | null) => {
     if (!name.trim()) return { success: false, error: "名称不能为空" };
     try {
-      const res = await fetch("/api/tags", {
+      const res = await apiFetch("/api/tags", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, color, parentId }),
       });
       const data = await res.json();
@@ -157,9 +167,8 @@ export default function TagsView() {
   // 更新标签
   const updateTag = async (id: string, name: string, color: string | null) => {
     try {
-      const res = await fetch("/api/tags", {
+      const res = await apiFetch("/api/tags", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, name, color }),
       });
       const data = await res.json();
@@ -182,7 +191,7 @@ export default function TagsView() {
       : `确定删除标签「${tagName}」吗？`;
     if (!confirm(msg)) return;
     try {
-      const res = await fetch(`/api/tags?id=${tagId}`, { method: "DELETE" });
+      const res = await apiFetch(`/api/tags?id=${tagId}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) loadTags();
       else setError(data.error || "删除失败");
@@ -195,9 +204,8 @@ export default function TagsView() {
   const moveTag = async (tagId: string, direction: "up" | "down") => {
     // 简单的 sortOrder 调整
     try {
-      const res = await fetch("/api/tags", {
+      const res = await apiFetch("/api/tags", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id: tagId,
           sortOrder: direction === "up" ? -1 : 1,
@@ -561,9 +569,15 @@ export default function TagsView() {
 
         {/* 错误提示 */}
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-sm text-red-600">
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-sm text-red-600">
             <AlertCircle size={16} />
             <span className="flex-1">{error}</span>
+            <button
+              onClick={() => loadTags()}
+              className="px-3 py-1 bg-red-100 hover:bg-red-200 rounded text-xs font-medium transition-colors"
+            >
+              重试
+            </button>
             <button onClick={() => setError("")} className="p-0.5 hover:bg-red-100 rounded">
               <X size={14} />
             </button>
