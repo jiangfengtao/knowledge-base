@@ -20,6 +20,8 @@ import {
   Trash2,
   Check,
   Move,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import clsx from "clsx";
 
@@ -62,6 +64,19 @@ export default function Sidebar({ activeNav, onNavChange, onKbSelect }: SidebarP
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [collapsed, setCollapsed] = useState(false);
+
+  // 读取折叠状态
+  useEffect(() => {
+    const saved = localStorage.getItem("sidebar_collapsed");
+    if (saved === "true") setCollapsed(true);
+  }, []);
+
+  const toggleCollapse = () => {
+    const next = !collapsed;
+    setCollapsed(next);
+    localStorage.setItem("sidebar_collapsed", String(next));
+  };
 
   // 行内编辑
   const [inlineEdit, setInlineEdit] = useState<{ id: string; name: string; type: "kb" | "doc" } | null>(null);
@@ -879,10 +894,17 @@ export default function Sidebar({ activeNav, onNavChange, onKbSelect }: SidebarP
     <>
       {/* Logo 区 */}
       <div className="px-4 py-3 flex items-center gap-2 border-b border-rule">
-        <div className="w-7 h-7 rounded bg-accent flex items-center justify-center text-white font-bold text-sm">
+        <div className="w-7 h-7 rounded bg-accent flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
           桃
         </div>
-        <span className="font-semibold text-ink">晓桃终生成长</span>
+        <span className="font-semibold text-ink flex-1">晓桃终生成长</span>
+        <button
+          onClick={toggleCollapse}
+          className="p-1.5 hover:bg-[#f2f3f5] rounded transition-colors flex-shrink-0"
+          title="收起侧边栏"
+        >
+          <PanelLeftClose size={16} className="text-muted" />
+        </button>
       </div>
 
       {/* 搜索框 */}
@@ -1046,11 +1068,84 @@ export default function Sidebar({ activeNav, onNavChange, onKbSelect }: SidebarP
     </>
   );
 
+  if (collapsed) {
+    // 折叠状态：窄边栏，只显示展开按钮和图标
+    return (
+      <>
+        <aside className="w-14 bg-white border-r border-rule flex flex-col flex-shrink-0 h-screen items-center py-3 gap-2">
+          {/* Logo + 展开按钮 */}
+          <button
+            onClick={toggleCollapse}
+            className="w-9 h-9 rounded bg-accent flex items-center justify-center text-white font-bold text-sm hover:bg-accent-2 transition-colors"
+            title="展开侧边栏"
+          >
+            桃
+          </button>
+
+          <div className="h-px w-8 bg-rule" />
+
+          {/* 导航图标 */}
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => onNavChange(item.id)}
+              className={clsx(
+                "w-9 h-9 rounded-lg flex items-center justify-center transition-colors",
+                activeNav === item.id
+                  ? "bg-accent-soft text-accent-deep"
+                  : "text-ink hover:bg-[#f2f3f5]"
+              )}
+              title={item.label}
+            >
+              {item.icon}
+            </button>
+          ))}
+
+          {/* 底部用户区 */}
+          <div className="mt-auto flex flex-col items-center gap-2">
+            <button
+              onClick={() => onNavChange("search")}
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-muted hover:bg-[#f2f3f5] hover:text-accent transition-colors"
+              title="搜索"
+            >
+              <Search size={18} />
+            </button>
+            <button
+              onClick={async () => {
+                await fetch("/api/auth/logout", { method: "POST" });
+                localStorage.removeItem("auth_token");
+                localStorage.removeItem("user_info");
+                router.push("/login");
+              }}
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-muted hover:bg-red-50 hover:text-red-500 transition-colors"
+              title="退出登录"
+            >
+              <LogOut size={16} />
+            </button>
+            <button
+              onClick={toggleCollapse}
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-muted hover:bg-[#f2f3f5] hover:text-accent transition-colors"
+              title="展开侧边栏"
+            >
+              <PanelLeftOpen size={18} />
+            </button>
+          </div>
+        </aside>
+
+        {/* 弹窗等仍然渲染 */}
+        {showNewKbForm && null}
+        {iconEdit && null}
+        {contextMenu && null}
+        {createMenu && null}
+      </>
+    );
+  }
+
   return (
     <>
-      {/* 侧边栏 - 始终显示 */}
+      {/* 侧边栏 - 展开状态 */}
       <aside
-        className="w-64 bg-white border-r border-rule flex flex-col flex-shrink-0 h-screen"
+        className="w-64 bg-white border-r border-rule flex flex-col flex-shrink-0 h-screen transition-all duration-200"
       >
         {sidebarContent}
       </aside>
