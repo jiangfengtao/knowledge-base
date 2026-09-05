@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Gift, Check, X, ArrowLeft } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 export default function RedeemPage() {
   const [code, setCode] = useState("");
@@ -51,7 +52,7 @@ export default function RedeemPage() {
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-4 sm:px-6 py-16">
+      <main className="max-w-lg mx-auto px-4 sm:px-6 py-16 pb-28 md:pb-16">
         <Link
           href="/membership"
           className="inline-flex items-center gap-1 text-sm text-muted hover:text-accent-deep transition-colors mb-8"
@@ -140,6 +141,9 @@ export default function RedeemPage() {
           </Link>
         </p>
       </main>
+
+      {/* 移动端底部导航 */}
+      <MobileBottomNav />
     </div>
   );
 }

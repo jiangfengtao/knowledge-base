@@ -21,6 +21,7 @@ import {
   User,
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import MobileBottomNav from "@/components/MobileBottomNav";
 import clsx from "clsx";
 
 interface InviteCode {
@@ -259,7 +260,7 @@ export default function AdminMembersPage() {
       </div>
 
       {/* 主体内容 */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-6 pb-28 md:pb-6">
         {/* Tab 1: 邀请码管理 */}
         {activeTab === "invites" && (
           <div className="space-y-6">
@@ -574,7 +575,10 @@ export default function AdminMembersPage() {
       </main>
 
       {/* 底部间距 */}
-      <div className="h-8" />
+      <div className="h-8 pb-16 md:pb-8" />
+
+      {/* 移动端底部导航 */}
+      <MobileBottomNav />
     </div>
   );
 }

@@ -220,7 +220,7 @@ export default async function AboutPage() {
               {mainCategories.map((cat) => (
                 <Link
                   key={cat.id}
-                  href={`/blog?category=${cat.id}`}
+                  href={`/blog?cat=${cat.id}`}
                   className="flex items-center gap-3 p-4 bg-bg rounded-xl hover:bg-accent-soft/50 transition-colors group"
                 >
                   <div

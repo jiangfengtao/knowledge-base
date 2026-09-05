@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import {
   Upload,
   FileText,
@@ -8,7 +9,9 @@ import {
   XCircle,
   Loader2,
   FolderOpen,
+  ArrowLeft,
 } from "lucide-react";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 export default function ImportPage() {
   const [files, setFiles] = useState<File[]>([]);
@@ -94,8 +97,16 @@ export default function ImportPage() {
   const totalZipFiles = files.filter((f) => f.name.endsWith(".zip")).length;
 
   return (
-    <div className="min-h-screen bg-bg p-6">
+    <div className="min-h-screen bg-bg p-6 pb-28 md:pb-6">
       <div className="max-w-2xl mx-auto">
+        {/* 返回按钮 */}
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1 text-sm text-muted hover:text-accent-deep transition-colors mb-6"
+        >
+          <ArrowLeft size={14} />
+          返回工作台
+        </Link>
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-accent-soft flex items-center justify-center">
             <Upload size={22} className="text-accent-deep" />
@@ -286,6 +297,9 @@ export default function ImportPage() {
           </p>
         </div>
       </div>
+
+      {/* 移动端底部导航 */}
+      <MobileBottomNav />
     </div>
   );
 }

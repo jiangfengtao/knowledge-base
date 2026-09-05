@@ -14,6 +14,7 @@ import {
   Tag,
 } from "lucide-react";
 import dayjs from "dayjs";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 type Subscriber = {
   id: string;
@@ -152,7 +153,7 @@ export default function SubscribersPage() {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-28 md:pb-8">
         {/* 统计卡片 */}
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="bg-white border border-rule rounded-xl p-5">
@@ -363,6 +364,9 @@ export default function SubscribersPage() {
           )}
         </div>
       </main>
+
+      {/* 移动端底部导航 */}
+      <MobileBottomNav />
     </div>
   );
 }

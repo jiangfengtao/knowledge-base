@@ -20,6 +20,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 interface SocialLinks {
   wechat?: string;
@@ -372,9 +373,7 @@ export default function SettingsPage() {
                 }`}
               >
                 <span
-                  className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
-                    defaultAllowCopy ? "translate-x-5.5" : "translate-x-0.5"
-                  }`}
+                  className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform"
                   style={{
                     transform: defaultAllowCopy
                       ? "translateX(22px)"
@@ -435,7 +434,10 @@ export default function SettingsPage() {
       </main>
 
       {/* 底部间距 */}
-      <div className="h-8" />
+      <div className="h-8 pb-16 md:pb-8" />
+
+      {/* 移动端底部导航 */}
+      <MobileBottomNav />
     </div>
   );
 }

@@ -296,9 +296,9 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-accent text-white hover:bg-accent-2 rounded transition-colors disabled:opacity-50"
+              className="flex items-center gap-1.5 px-4 py-2 text-base bg-accent text-white hover:bg-accent-2 rounded-lg transition-colors disabled:opacity-50 font-medium"
             >
-              <Save size={15} />
+              <Save size={17} />
               <span>{saving ? "保存中..." : "保存"}</span>
             </button>
           ) : (
@@ -541,7 +541,7 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
         <button
           onClick={handleSave}
           disabled={saving}
-          className="md:hidden fixed bottom-16 right-4 z-40 w-12 h-12 bg-accent text-white rounded-full shadow-lg flex items-center justify-center active:scale-95 transition-transform disabled:opacity-50"
+          className="md:hidden fixed bottom-20 right-4 z-40 w-12 h-12 bg-accent text-white rounded-full shadow-lg flex items-center justify-center active:scale-95 transition-transform disabled:opacity-50"
           aria-label="保存"
         >
           <Save size={20} />
