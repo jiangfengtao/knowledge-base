@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "node scripts/setup-prisma.mjs && prisma generate && prisma db push --accept-data-loss && node scripts/seed-production.mjs && next build",
+  "buildCommand": "node scripts/setup-prisma.mjs && prisma generate && prisma db push --accept-data-loss && node scripts/seed-production.mjs && node scripts/update-video-thumbnails.mjs && next build",
   "installCommand": "npm install",
   "framework": "nextjs",
   "regions": ["hkg1"],

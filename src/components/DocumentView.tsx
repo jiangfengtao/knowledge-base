@@ -17,6 +17,7 @@ import {
   PanelLeft,
   Video,
   X,
+  Clock3,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import dayjs from "dayjs";
@@ -442,6 +443,13 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
               <Eye size={14} />
               {wordCount} 字
             </span>
+            {/* 阅读时间 */}
+            {wordCount > 0 && (
+              <span className="flex items-center gap-1 text-muted/70">
+                <Clock3 size={12} />
+                约 {Math.max(1, Math.ceil(wordCount / 300))} 分钟阅读
+              </span>
+            )}
             {isVideo && (
               <span className="flex items-center gap-1 text-accent-deep bg-accent-soft px-2 py-0.5 rounded-full">
                 <Video size={12} />

@@ -168,7 +168,6 @@ interface SamplePost {
   tags: string[];
   isVideo?: boolean;
   videoUrl?: string;
-  videoCover?: string;
   videoDuration?: string;
 }
 
@@ -264,6 +263,7 @@ const SAMPLE_POSTS: SamplePost[] = [
     tags: ["学习方法", "自律", "早起"],
     isVideo: true,
     videoDuration: "8:32",
+    videoThumbnail: "https://images.unsplash.com/photo-1499750310107-5fef28a65738?w=800&h=450&fit=crop",
     content: `<h1>我的晨间学习routine分享</h1><p>很多人好奇我每天早上是怎么安排学习的，今天就用视频记录一下我的晨间学习日常。</p><h2>视频内容概览</h2><ul><li>06:30 起床 + 冥想</li><li>07:00 英语听力 30分钟</li><li>07:30 阅读 + 笔记</li><li>08:30 运动 + 早餐</li><li>09:00 开始深度工作</li></ul><blockquote>早上的时间是一天中最宝贵的，没有人打扰，精力也最充沛。</blockquote><p>完整内容请看视频～</p>`,
   },
   {
@@ -274,6 +274,7 @@ const SAMPLE_POSTS: SamplePost[] = [
     tags: ["学习方法", "费曼技巧"],
     isVideo: true,
     videoDuration: "3:15",
+    videoThumbnail: "https://images.unsplash.com/photo-1544716306-8beeada7d80b?w=800&h=450&fit=crop",
     content: `<h1>3分钟学会费曼学习法</h1><p>费曼学习法是公认最高效的学习方法之一，今天用 3 分钟给你讲清楚。</p><h2>核心原理</h2><p>如果你不能用简单的语言把一个概念讲给一个10岁的孩子听，说明你还没有真正理解它。</p><h2>四个步骤</h2><ol><li>选择一个概念</li><li>用最简单的话解释</li><li>找出知识缺口</li><li>简化和类比</li><li></ol><p>详细讲解请看视频～</p>`,
   },
   {
@@ -284,6 +285,7 @@ const SAMPLE_POSTS: SamplePost[] = [
     tags: ["阅读", "书单推荐", "读书笔记"],
     isVideo: true,
     videoDuration: "12:45",
+    videoThumbnail: "https://images.unsplash.com/photo-1488190211105-8b0fc5308247?w=800&h=450&fit=crop",
     content: `<h1>5月读书报告：这个月我读了6本书</h1><p>5月份一共读了 6 本书，今天来给大家分享一下。</p><h2>本月书单</h2><ul><li>《原子习惯》⭐⭐⭐⭐⭐ 强烈推荐</li><li>《思考，快与慢》⭐⭐⭐⭐ 有点难读但很有价值</li><li>《人类简史》⭐⭐⭐⭐ 拓宽视野</li><li>《刻意练习》⭐⭐⭐⭐ 方法论类</li><li>《小王子》⭐⭐⭐⭐⭐ 重温经典</li><li>《高效能人士的七个习惯》⭐⭐⭐ 有点过时但经典</li></ul><p>每本书的详细分享请看视频～</p>`,
   },
   {
@@ -294,6 +296,7 @@ const SAMPLE_POSTS: SamplePost[] = [
     tags: ["自媒体", "个人成长", "内容创作"],
     isVideo: true,
     videoDuration: "10:20",
+    videoThumbnail: "https://images.unsplash.com/photo-1571019613454-1cb2efda17a4?w=800&h=450&fit=crop",
     content: `<h1>从零开始做博主的第100天</h1><p>今天是我做自媒体的第 100 天，想拍个视频记录一下这段时间的收获和感悟。</p><h2>100天的成果</h2><ul><li>发布了 30 篇内容</li><li>粉丝从 0 涨到了 3000+</li><li>接到了第一单广告</li><li>认识了很多同频的朋友</li></ul><h2>最大的感悟</h2><blockquote>开始比完美重要。行动比想重要。</blockquote><p>详细的心路历程请看视频～</p>`,
   },
 
@@ -395,7 +398,7 @@ export async function seedContentArchitecture() {
       await prisma.document.deleteMany({ where: { id: { in: oldDocIds } } });
     }
 
-    await prisma.knowledgeBase.deleteMany({ where: { id: { in: oldKbIds } });
+    await prisma.knowledgeBase.deleteMany({ where: { id: { in: oldKbIds } } });
   }
 
   // ========== 2. 清理旧标签 ==========
@@ -509,8 +512,8 @@ export async function seedContentArchitecture() {
         license: "cc-by-nc-sa",
         isVideo: post.isVideo || false,
         videoUrl: post.videoUrl || "",
-        videoCover: post.videoCover || "",
         videoDuration: post.videoDuration || "",
+        videoThumbnail: post.videoThumbnail || null,
       },
     });
 
