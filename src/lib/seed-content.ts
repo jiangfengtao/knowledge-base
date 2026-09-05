@@ -169,6 +169,7 @@ interface SamplePost {
   isVideo?: boolean;
   videoUrl?: string;
   videoDuration?: string;
+  videoThumbnail?: string;
 }
 
 const SAMPLE_POSTS: SamplePost[] = [
