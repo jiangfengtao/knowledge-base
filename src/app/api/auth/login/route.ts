@@ -7,33 +7,10 @@ import { rateLimit, getClientIP } from "@/lib/rateLimit";
 // 登录
 export async function POST(request: Request) {
   try {
-    // 速率限制：每个IP+邮箱 15分钟内最多5次
-    const ip = getClientIP(request);
-    let email = "";
-    try {
-      const body = await request.json();
-      email = body.email || "";
-    } catch {
-      // 忽略 JSON 解析错误
-    }
-
-    const rateKey = `login:${ip}:${email}`;
-    const limit = rateLimit(rateKey, 5, 15 * 60 * 1000);
-
-    if (!limit.allowed) {
-      const minutes = Math.ceil(limit.resetAfter / 60000);
-      return NextResponse.json(
-        { success: false, error: `尝试次数过多，请 ${minutes} 分钟后再试` },
-        { status: 429, headers: { "Retry-After": String(Math.ceil(limit.resetAfter / 1000)) } }
-      );
-    }
-
-    // 重新读取 body（上面已消费了 stream）
-    // 使用 request.clone() 在 rate limit 之前读取
-    const clonedRequest = request.clone();
+    // 先读取一次 body（只读一次，后续复用）
     let body;
     try {
-      body = await clonedRequest.json();
+      body = await request.json();
     } catch {
       body = {};
     }
@@ -47,10 +24,18 @@ export async function POST(request: Request) {
       );
     }
 
-    // 先检查是否有默认用户（兼容旧数据迁移）
-    const defaultUser = await prisma.user.findUnique({
-      where: { id: "user-default" },
-    });
+    // 速率限制：每个IP+邮箱 15分钟内最多5次
+    const ip = getClientIP(request);
+    const rateKey = `login:${ip}:${bodyEmail}`;
+    const limit = rateLimit(rateKey, 5, 15 * 60 * 1000);
+
+    if (!limit.allowed) {
+      const minutes = Math.ceil(limit.resetAfter / 60000);
+      return NextResponse.json(
+        { success: false, error: `尝试次数过多，请 ${minutes} 分钟后再试` },
+        { status: 429, headers: { "Retry-After": String(Math.ceil(limit.resetAfter / 1000)) } }
+      );
+    }
 
     const isProduction = process.env.NODE_ENV === "production";
     const cookieOptions = {
@@ -60,6 +45,11 @@ export async function POST(request: Request) {
       sameSite: "lax" as const,
       ...(isProduction && { secure: true }),
     };
+
+    // 先检查是否有默认用户（兼容旧数据迁移）
+    const defaultUser = await prisma.user.findUnique({
+      where: { id: "user-default" },
+    });
 
     // 如果默认用户没有密码，给它设置密码（首次登录迁移）
     if (defaultUser && !defaultUser.password && defaultUser.email === bodyEmail) {
