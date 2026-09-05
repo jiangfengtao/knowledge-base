@@ -3,6 +3,7 @@ import { getDefaultUser } from "@/lib/user";
 import Link from "next/link";
 import type { Metadata } from "next";
 import ThemeToggle from "@/components/ThemeToggle";
+import MobileBottomNav from "@/components/MobileBottomNav";
 import {
   FileText,
   Type,
@@ -355,7 +356,7 @@ export default async function AboutPage() {
       </main>
 
       {/* 页脚 */}
-      <footer className="border-t border-rule bg-white mt-8">
+      <footer className="border-t border-rule bg-white mt-8 pb-16 md:pb-8">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 text-center text-sm text-muted">
           <p>© {new Date().getFullYear()} {blogTitle} · 用知识点亮成长之路</p>
           <div className="flex items-center justify-center gap-4 mt-3 text-xs">
@@ -367,6 +368,9 @@ export default async function AboutPage() {
           </div>
         </div>
       </footer>
+
+      {/* 移动端底部导航 */}
+      <MobileBottomNav />
     </div>
   );
 }

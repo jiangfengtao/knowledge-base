@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import BlogPostClient from "./BlogPostClient";
 import ThemeToggle from "@/components/ThemeToggle";
 import ShareButtons from "@/components/ShareButtons";
+import MobileBottomNav, { MobileBackButton } from "@/components/MobileBottomNav";
 import { getCurrentUser } from "@/lib/auth-server";
 import SubscribeBox from "@/components/SubscribeBox";
 
@@ -262,21 +263,27 @@ export default async function BlogPostPage({
       {/* 顶部导航 */}
       <header className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-rule">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-          <Link href="/blog" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-white font-bold">
-              桃
-            </div>
-            <span className="font-semibold text-ink">晓桃终生成长</span>
-          </Link>
+          <div className="flex items-center gap-2">
+            {/* 移动端返回按钮 */}
+            <MobileBackButton fallbackUrl="/blog" />
+            <Link href="/blog" className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-white font-bold">
+                桃
+              </div>
+              <span className="font-semibold text-ink hidden sm:inline">晓桃终生成长</span>
+            </Link>
+          </div>
 
           <div className="flex items-center gap-3">
             <Link
               href="/blog"
-              className="text-sm text-muted hover:text-accent-deep transition-colors flex items-center gap-1"
+              className="hidden md:flex text-sm text-muted hover:text-accent-deep transition-colors items-center gap-1"
             >
               <ArrowLeft size={14} />
               返回首页
             </Link>
+            <Link href="/videos" className="hidden md:inline text-sm text-muted hover:text-accent-deep transition-colors">视频</Link>
+            <Link href="/about" className="hidden md:inline text-sm text-muted hover:text-accent-deep transition-colors">关于</Link>
             <ThemeToggle />
           </div>
         </div>
@@ -609,7 +616,7 @@ export default async function BlogPostPage({
       </main>
 
       {/* 页脚 */}
-      <footer className="border-t border-rule bg-white">
+      <footer className="border-t border-rule bg-white pb-16 md:pb-8">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 text-center text-sm text-muted">
           <p>© {new Date().getFullYear()} 晓桃终生成长 · 用知识点亮成长之路</p>
           <p className="mt-2 text-xs">
@@ -629,6 +636,9 @@ export default async function BlogPostPage({
           </p>
         </div>
       </footer>
+
+      {/* 移动端底部导航 */}
+      <MobileBottomNav />
     </div>
   );
 }

@@ -22,6 +22,7 @@ import {
 import dynamic from "next/dynamic";
 import dayjs from "dayjs";
 import { sanitizeHtml } from "@/lib/sanitize";
+import DocOutline from "./DocOutline";
 
 const TiptapEditor = dynamic(() => import("./TiptapEditor"), {
   ssr: false,
@@ -255,7 +256,8 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
   const isEditing = mode === "edit" && !mobilePreview;
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden bg-white">
+    <div className="flex-1 flex overflow-hidden bg-white">
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
       {/* 顶部工具栏 */}
       <div className="flex items-center justify-between px-4 sm:px-6 py-2 sm:py-3 border-b border-rule gap-2">
         <div className="flex items-center gap-1 flex-shrink-0">
@@ -492,6 +494,12 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
           )}
         </div>
       </div>
+      </div>
+
+      {/* 右侧大纲面板 - 仅大屏幕显示 */}
+      <aside className="hidden xl:flex w-56 border-l border-rule flex-shrink-0 overflow-hidden bg-[#fafbfc]">
+        <DocOutline content={content} editable={isEditing} />
+      </aside>
 
       {/* 移动端保存按钮 - 固定在底部工具栏右侧（与编辑器工具栏整合，编辑器已自带底部工具栏） */}
       {/* 这里额外加一个保存悬浮按钮，在编辑模式的移动端显示 */}

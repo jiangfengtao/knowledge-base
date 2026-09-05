@@ -3,6 +3,7 @@ import { getDefaultUser } from "@/lib/user";
 import Link from "next/link";
 import { PlayCircle, Calendar, Clock, History, Tag, Crown, Film, TrendingUp } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 export const dynamic = "force-dynamic";
 
@@ -330,12 +331,15 @@ export default async function VideosPage({
       </main>
 
       {/* 页脚 */}
-      <footer className="border-t border-rule bg-white">
+      <footer className="border-t border-rule bg-white pb-16 md:pb-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 text-center text-sm text-muted">
           <p>© {new Date().getFullYear()} {blogTitle} · 用知识点亮成长之路</p>
           <p className="mt-2 text-xs">Powered by 晓桃知识库系统</p>
         </div>
       </footer>
+
+      {/* 移动端底部导航 */}
+      <MobileBottomNav />
     </div>
   );
 }

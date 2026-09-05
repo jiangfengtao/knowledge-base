@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Search, Calendar, Clock, BookOpen, History, Tag, Crown, X, PlayCircle, Film, Video, ArrowRight } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import SubscribeBox from "@/components/SubscribeBox";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 // 前台博客首页 - 公开文章列表
 export default async function BlogHome({
@@ -478,7 +479,7 @@ export default async function BlogHome({
       </main>
 
       {/* 页脚 */}
-      <footer className="border-t border-rule bg-white">
+      <footer className="border-t border-rule bg-white pb-16 md:pb-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 text-center text-sm text-muted">
           <p>© {new Date().getFullYear()} {blogTitle} · 用知识点亮成长之路</p>
           <p className="mt-2 text-xs">
@@ -486,6 +487,9 @@ export default async function BlogHome({
           </p>
         </div>
       </footer>
+
+      {/* 移动端底部导航 */}
+      <MobileBottomNav />
     </div>
   );
 }

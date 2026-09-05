@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Calendar, BookOpen, Clock } from "lucide-react";
 import type { Metadata } from "next";
 import ThemeToggle from "@/components/ThemeToggle";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 export const dynamic = "force-dynamic";
 
@@ -165,11 +166,14 @@ export default async function TimelinePage() {
       </main>
 
       {/* 页脚 */}
-      <footer className="border-t border-rule bg-white">
+      <footer className="border-t border-rule bg-white pb-16 md:pb-8">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 text-center text-sm text-muted">
           <p>© {new Date().getFullYear()} 晓桃终生成长 · 用知识点亮成长之路</p>
         </div>
       </footer>
+
+      {/* 移动端底部导航 */}
+      <MobileBottomNav />
     </div>
   );
 }
