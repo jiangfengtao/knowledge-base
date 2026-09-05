@@ -8,6 +8,7 @@ import NotesView from "@/components/NotesView";
 import SearchView from "@/components/SearchView";
 import FavoritesView from "@/components/FavoritesView";
 import TagsView from "@/components/TagsView";
+import { Globe, Film, BarChart3, ExternalLink } from "lucide-react";
 
 // 懒加载重型组件（包含 Tiptap 编辑器）
 const DocumentView = dynamic(() => import("@/components/DocumentView"), {
@@ -93,19 +94,59 @@ export default function KnowledgeBaseApp() {
       </div>
 
       {/* 主内容区 */}
-      <main className="flex-1 flex overflow-hidden" role="main">
-        {/* 移动端汉堡菜单 */}
-        <button
-          onClick={() => setMobileSidebarOpen(true)}
-          className="fixed top-3 left-3 z-20 md:hidden w-10 h-10 flex items-center justify-center bg-white rounded-lg shadow-md border border-rule"
-          aria-label="打开菜单"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <line x1="3" y1="12" x2="21" y2="12" />
-            <line x1="3" y1="18" x2="21" y2="18" />
-          </svg>
-        </button>
+      <main className="flex-1 flex flex-col overflow-hidden" role="main">
+        {/* 顶部工具栏 - 粉丝入口 */}
+        <div className="flex items-center justify-between px-3 py-1.5 bg-white border-b border-rule">
+          <div className="flex items-center gap-2">
+            {/* 移动端汉堡菜单 */}
+            <button
+              onClick={() => setMobileSidebarOpen(true)}
+              className="md:hidden w-8 h-8 flex items-center justify-center hover:bg-[#f2f3f5] rounded transition-colors"
+              aria-label="打开菜单"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
+            <span className="text-xs text-muted hidden sm:inline">工作台</span>
+          </div>
+          {/* 粉丝页面入口 */}
+          <div className="flex items-center gap-1.5 text-xs">
+            <a
+              href="/blog"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 px-2.5 py-1.5 bg-accent-soft text-accent-deep rounded-md hover:bg-accent hover:text-white transition-colors font-medium"
+            >
+              <Globe size={13} />
+              <span>粉丝页</span>
+              <ExternalLink size={9} className="opacity-60" />
+            </a>
+            <a
+              href="/videos"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 px-2.5 py-1.5 bg-rose-50 text-rose-500 rounded-md hover:bg-rose-500 hover:text-white transition-colors font-medium"
+            >
+              <Film size={13} />
+              <span className="hidden sm:inline">视频</span>
+            </a>
+            <a
+              href="/dashboard"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 px-2.5 py-1.5 bg-purple-50 text-purple-500 rounded-md hover:bg-purple-500 hover:text-white transition-colors font-medium"
+            >
+              <BarChart3 size={13} />
+              <span className="hidden sm:inline">数据</span>
+            </a>
+          </div>
+        </div>
+
+        {/* 内容区域 */}
+        <div className="flex-1 flex overflow-hidden">
 
         {activeNav === "kb" && (
           <>
@@ -158,6 +199,7 @@ export default function KnowledgeBaseApp() {
         {activeNav === "favorites" && (
           <FavoritesView onSelectDoc={handleSelectDocFromSearch} />
         )}
+        </div>
       </main>
     </div>
   );
