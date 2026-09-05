@@ -6,6 +6,7 @@ import { sanitizeHtml } from "@/lib/sanitize";
 import type { Metadata } from "next";
 import BlogPostClient from "./BlogPostClient";
 import ThemeToggle from "@/components/ThemeToggle";
+import ShareButtons from "@/components/ShareButtons";
 import { getCurrentUser } from "@/lib/auth-server";
 import SubscribeBox from "@/components/SubscribeBox";
 
@@ -504,25 +505,13 @@ export default async function BlogPostPage({
                   {post.allowShare !== false && (
                     <div className="flex items-center gap-2 mt-2">
                       <span className="text-muted">分享：</span>
-                      <button
-                        onClick={() => {
-                          if (navigator.share) {
-                            navigator.share({
-                              title: post.title,
-                              url: `https://xiaotaotop.com/blog/post/${post.id}`,
-                            });
-                          } else {
-                            navigator.clipboard.writeText(
-                              `https://xiaotaotop.com/blog/post/${post.id}`
-                            );
-                            alert("链接已复制到剪贴板");
-                          }
-                        }}
-                        className="inline-flex items-center gap-1 px-2 py-1 bg-white border border-rule rounded hover:border-accent/30 text-ink transition-colors"
-                      >
-                        <Share2 size={12} />
-                        <span className="text-xs">分享</span>
-                      </button>
+                      <div className="relative inline-block">
+                        <ShareButtons
+                          url={`/blog/post/${post.id}`}
+                          title={post.title}
+                          description={post.plainText.slice(0, 120)}
+                        />
+                      </div>
                     </div>
                   )}
                 </div>

@@ -22,6 +22,9 @@ import {
   Move,
   PanelLeftClose,
   PanelLeftOpen,
+  Globe,
+  BarChart3,
+  ExternalLink,
 } from "lucide-react";
 import clsx from "clsx";
 
@@ -1031,6 +1034,35 @@ export default function Sidebar({ activeNav, onNavChange, onKbSelect }: SidebarP
 
       {/* 底部用户区 */}
       <div className="border-t border-rule p-3">
+        {/* 快捷入口 */}
+        <div className="flex items-center gap-1.5 mb-3 px-1">
+          <button
+            onClick={() => window.open("/blog", "_blank")}
+            className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-xs bg-accent-soft text-accent-deep rounded-lg hover:bg-accent hover:text-white transition-colors font-medium"
+            title="在新标签页打开粉丝页面"
+          >
+            <Globe size={14} />
+            <span>粉丝页</span>
+            <ExternalLink size={10} className="opacity-60" />
+          </button>
+          <button
+            onClick={() => window.open("/videos", "_blank")}
+            className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-xs bg-rose-50 text-rose-500 rounded-lg hover:bg-rose-500 hover:text-white transition-colors font-medium"
+            title="视频页面"
+          >
+            <FileText size={14} />
+            <span>视频</span>
+          </button>
+          <button
+            onClick={() => window.open("/dashboard", "_blank")}
+            className="flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-xs bg-purple-50 text-purple-500 rounded-lg hover:bg-purple-500 hover:text-white transition-colors font-medium"
+            title="数据看板"
+          >
+            <BarChart3 size={14} />
+            <span>数据</span>
+          </button>
+        </div>
+        {/* 用户信息行 */}
         <div className="flex items-center gap-2 px-1">
           <div className="w-7 h-7 rounded-full bg-accent/10 flex items-center justify-center text-sm font-medium text-accent">
             {userName ? userName.charAt(0) : "我"}
@@ -1105,6 +1137,20 @@ export default function Sidebar({ activeNav, onNavChange, onKbSelect }: SidebarP
 
           {/* 底部用户区 */}
           <div className="mt-auto flex flex-col items-center gap-2">
+            <button
+              onClick={() => window.open("/blog", "_blank")}
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-accent-deep bg-accent-soft hover:bg-accent hover:text-white transition-colors"
+              title="粉丝页面"
+            >
+              <Globe size={18} />
+            </button>
+            <button
+              onClick={() => window.open("/dashboard", "_blank")}
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-purple-500 bg-purple-50 hover:bg-purple-500 hover:text-white transition-colors"
+              title="数据看板"
+            >
+              <BarChart3 size={18} />
+            </button>
             <button
               onClick={() => onNavChange("search")}
               className="w-9 h-9 rounded-lg flex items-center justify-center text-muted hover:bg-[#f2f3f5] hover:text-accent transition-colors"

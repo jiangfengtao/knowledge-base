@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { getDefaultUser } from "@/lib/user";
 import Link from "next/link";
-import { Search, Calendar, Clock, BookOpen, History, Tag, Crown, X, PlayCircle } from "lucide-react";
+import { Search, Calendar, Clock, BookOpen, History, Tag, Crown, X, PlayCircle, Film, Video, ArrowRight } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import SubscribeBox from "@/components/SubscribeBox";
 
@@ -75,6 +75,26 @@ export default async function BlogHome({
           name: true,
         },
       },
+    },
+  });
+
+  // 获取最新的视频文章（用于首页视频专区）
+  const videoPosts = await prisma.document.findMany({
+    where: {
+      visibility: "public",
+      isDeleted: false,
+      isVideo: true,
+    },
+    orderBy: { lastModifiedAt: "desc" },
+    take: 4,
+    select: {
+      id: true,
+      title: true,
+      plainText: true,
+      videoDuration: true,
+      videoThumbnail: true,
+      lastModifiedAt: true,
+      knowledgeBase: { select: { id: true, name: true, icon: true } },
     },
   });
 
@@ -213,6 +233,77 @@ export default async function BlogHome({
         <div className="flex flex-col lg:flex-row gap-8">
           {/* 文章列表 */}
           <div className="flex-1">
+            {/* 视频文章专区 */}
+            {!search && !category && !tag && videoPosts.length > 0 && (
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold text-ink flex items-center gap-2">
+                    <span className="w-1 h-5 bg-rose-400 rounded-full" />
+                    <Film size={20} className="text-rose-400" />
+                    最新视频
+                  </h2>
+                  <Link href="/videos" className="text-sm text-accent-deep hover:underline flex items-center gap-1">
+                    全部视频 <ArrowRight size={14} />
+                  </Link>
+                </div>
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                  {videoPosts.map((video) => (
+                    <Link
+                      key={video.id}
+                      href={`/blog/post/${video.id}`}
+                      className="group bg-white border border-rule rounded-xl overflow-hidden hover:border-accent/30 hover:shadow-lg transition-all"
+                    >
+                      {/* 封面 */}
+                      <div className="relative aspect-video bg-gradient-to-br from-[#f0f7ff] to-accent-soft overflow-hidden">
+                        {video.videoThumbnail ? (
+                          <img
+                            src={video.videoThumbnail}
+                            alt={video.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Film size={24} className="text-accent/30" />
+                          </div>
+                        )}
+                        {/* 播放按钮遮罩 */}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
+                            <PlayCircle size={22} className="text-accent-deep ml-0.5" fill="currentColor" />
+                          </div>
+                        </div>
+                        {/* 时长 */}
+                        {video.videoDuration && (
+                          <div className="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 bg-black/75 text-white text-xs rounded font-medium">
+                            {video.videoDuration}
+                          </div>
+                        )}
+                      </div>
+                      {/* 标题 */}
+                      <div className="p-2.5 sm:p-3">
+                        <h3 className="text-xs sm:text-sm font-medium text-ink group-hover:text-accent-deep transition-colors line-clamp-2 leading-snug">
+                          {video.title}
+                        </h3>
+                        <div className="flex items-center gap-2 mt-1.5 text-xs text-muted">
+                          <span className="flex items-center gap-0.5">
+                            <Calendar size={10} />
+                            {new Date(video.lastModifiedAt).toLocaleDateString("zh-CN", { month: "short", day: "numeric" })}
+                          </span>
+                          {video.knowledgeBase && (
+                            <span className="flex items-center gap-0.5">
+                              <span>{video.knowledgeBase.icon || "🎬"}</span>
+                              {video.knowledgeBase.name}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 文章列表标题 */}
             <div className="mb-4">
               <h2 className="text-lg font-semibold text-ink flex items-center gap-2">
                 <span className="w-1 h-5 bg-accent rounded-full" />
