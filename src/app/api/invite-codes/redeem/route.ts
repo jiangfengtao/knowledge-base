@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth-server";
+import { rateLimit, getClientIP } from "@/lib/rateLimit";
 
 // 兑换邀请码
 export async function POST(request: Request) {
@@ -18,6 +19,18 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { success: false, error: "请输入邀请码" },
         { status: 400 }
+      );
+    }
+
+    // 速率限制：每个IP每分钟最多10次尝试（防止暴力破解邀请码）
+    const ip = getClientIP(request);
+    const rateKey = `redeem:${ip}`;
+    const limit = rateLimit(rateKey, 10, 60 * 1000);
+
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { success: false, error: "尝试次数过多，请稍后再试" },
+        { status: 429 }
       );
     }
 
@@ -75,8 +88,9 @@ export async function POST(request: Request) {
       expiresAt,
     });
   } catch (error: any) {
+    console.error("兑换邀请码失败:", error);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: "兑换失败，请稍后重试" },
       { status: 500 }
     );
   }

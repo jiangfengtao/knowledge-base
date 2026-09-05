@@ -1,10 +1,23 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import crypto from "crypto";
+import { rateLimit, getClientIP } from "@/lib/rateLimit";
 
 // 邮件订阅
 export async function POST(request: Request) {
   try {
+    // 速率限制：每个IP每分钟最多5次订阅（防止垃圾邮件轰炸）
+    const ip = getClientIP(request);
+    const rateKey = `subscribe:${ip}`;
+    const limit = rateLimit(rateKey, 5, 60 * 1000);
+
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { success: false, error: "操作过于频繁，请稍后再试" },
+        { status: 429 }
+      );
+    }
+
     const { email, source = "blog" } = await request.json();
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
