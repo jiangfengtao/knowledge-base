@@ -17,7 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 公开博客文章
   try {
     const posts = await prisma.document.findMany({
-      where: { isPublic: true, isDeleted: false },
+      where: { visibility: "public", isDeleted: false },
       select: { id: true, lastModifiedAt: true },
       orderBy: { lastModifiedAt: "desc" },
       take: 100,

@@ -98,7 +98,6 @@ export async function PUT(
           where: {
             userId: user.id,
             name: tagName,
-            parentId: null,
           },
         });
 
@@ -107,7 +106,6 @@ export async function PUT(
             data: {
               name: tagName,
               userId: user.id,
-              parentId: null,
             },
           });
         }

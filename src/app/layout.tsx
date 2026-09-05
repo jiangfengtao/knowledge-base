@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "@/styles/globals.css";
 import AuthFetchProvider from "@/components/AuthFetchProvider";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import ThemeScript from "@/components/ThemeScript";
 
 const SITE_URL = "https://xiaotaotop.com";
 
@@ -78,6 +79,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body>
+        <ThemeScript />
         <AuthFetchProvider>
           {children}
           <ServiceWorkerRegister />

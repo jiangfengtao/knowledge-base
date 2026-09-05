@@ -15,6 +15,7 @@ export function sanitizeHtml(dirty: string): string {
       "table", "thead", "tbody", "tr", "th", "td",
       "div", "span", "section",
       "details", "summary",
+      "video", "source",
     ],
     ALLOWED_ATTR: [
       "href", "title", "target", "rel",
@@ -22,6 +23,7 @@ export function sanitizeHtml(dirty: string): string {
       "class", "id",
       "colspan", "rowspan",
       "data-*",
+      "poster", "controls", "autoplay", "loop", "muted", "playsinline",
     ],
     ALLOW_DATA_ATTR: true,
   });

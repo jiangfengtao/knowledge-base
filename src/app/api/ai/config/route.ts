@@ -10,7 +10,7 @@ export async function POST(request: Request) {
 
     const user = await getDefaultUser();
 
-    // 保存到 userSettings（JSON 字段里）
+    // 保存到 userSettings
     const aiConfig = {
       provider: provider || "deepseek",
       apiKey: apiKey || "",
@@ -19,24 +19,20 @@ export async function POST(request: Request) {
     };
 
     // 检查是否已有设置
-    let settings = await prisma.userSettings.findUnique({
+    const existing = await prisma.userSettings.findUnique({
       where: { userId: user.id },
     });
 
-    if (settings) {
-      // 更新
-      const settingsJson: any = settings.settings ? JSON.parse(settings.settings) : {};
-      settingsJson.ai = aiConfig;
-      settings = await prisma.userSettings.update({
+    if (existing) {
+      await prisma.userSettings.update({
         where: { userId: user.id },
-        data: { settings: JSON.stringify(settingsJson) },
+        data: { aiConfig: JSON.stringify(aiConfig) },
       });
     } else {
-      // 创建
-      settings = await prisma.userSettings.create({
+      await prisma.userSettings.create({
         data: {
           userId: user.id,
-          settings: JSON.stringify({ ai: aiConfig }),
+          aiConfig: JSON.stringify(aiConfig),
         },
       });
     }
@@ -67,8 +63,7 @@ export async function GET() {
       where: { userId: user.id },
     });
 
-    const settingsJson: any = settings?.settings ? JSON.parse(settings.settings) : {};
-    const aiConfig = settingsJson.ai || {};
+    const aiConfig = settings?.aiConfig ? JSON.parse(settings.aiConfig) : {};
 
     return NextResponse.json({
       success: true,

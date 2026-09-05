@@ -21,8 +21,7 @@ export async function POST(request: Request) {
       where: { userId: user.id },
     });
 
-    const settingsJson: any = settings?.settings ? JSON.parse(settings.settings) : {};
-    const aiConfig = settingsJson.ai || {};
+    const aiConfig = settings?.aiConfig ? JSON.parse(settings.aiConfig) : {};
 
     if (!aiConfig.apiKey) {
       return new Response(

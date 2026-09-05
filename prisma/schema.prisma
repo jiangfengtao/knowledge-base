@@ -17,6 +17,12 @@ model User {
   email     String   @unique
   password  String?
   avatar    String?
+  // 是否为会员
+  isMember   Boolean  @default(false)
+  // 会员到期时间（null = 永久）
+  memberExpiresAt DateTime?
+  // 会员等级：basic / premium / vip
+  memberTier String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -25,6 +31,26 @@ model User {
   notes          Note[]
   tags           Tag[]
   settings       UserSettings?
+  // 用户使用过的邀请码
+  usedInviteCodeId String?
+}
+
+// 邀请码
+model InviteCode {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  // 会员天数（0=永久）
+  days      Int      @default(365)
+  // 会员等级
+  tier      String   @default("premium")
+  // 是否已使用
+  isUsed    Boolean  @default(false)
+  // 使用人
+  usedBy    String?
+  usedAt    DateTime?
+  // 创建人（管理员）
+  createdBy String
+  createdAt DateTime @default(now())
 }
 
 // 知识库
@@ -69,8 +95,20 @@ model Document {
   user           User     @relation(fields: [userId], references: [id])
   // 是否收藏
   isFavorite     Boolean  @default(false)
-  // 是否公开（前台展示站可见）
-  isPublic       Boolean  @default(false)
+  // 可见性：public（公开）/ members（仅会员）/ private（仅自己）
+  visibility     String   @default("private")
+  // 是否允许分享（有分享按钮）
+  allowShare     Boolean  @default(true)
+  // 是否允许复制
+  allowCopy      Boolean  @default(true)
+  // 版权协议：all-rights / cc-by / cc-by-nc / cc-by-nc-sa
+  license        String   @default("all-rights")
+  // 是否是系列/专栏（可以包含子文档）
+  isSeries       Boolean  @default(false)
+  // 系列ID（如果这篇文章属于某个系列）
+  seriesId       String?
+  // 系列中的排序
+  seriesOrder    Int      @default(0)
   // 排序
   sortOrder      Int      @default(0)
   // 同步用：最后修改时间
@@ -79,65 +117,126 @@ model Document {
   version        Int      @default(1)
   // 是否删除（软删除）
   isDeleted      Boolean  @default(false)
+  // 阅读量
+  viewCount      Int      @default(0)
+  // 视频地址（支持 mp4、B站嵌入、YouTube等）
+  videoUrl       String?
+  // 视频时长（如 "12:30"）
+  videoDuration  String?
+  // 是否是视频内容
+  isVideo        Boolean  @default(false)
+  // 视频封面图
+  videoThumbnail String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
   tags DocumentTag[]
+  // 版本历史
+  versions DocumentVersion[]
 
   @@index([knowledgeBaseId])
   @@index([userId, isDeleted])
   @@index([userId, knowledgeBaseId])
   @@index([lastModifiedAt])
   @@index([isDeleted])
-  @@index([isPublic, isDeleted])
+  @@index([visibility, isDeleted])
   @@index([isFavorite, userId])
+  @@index([seriesId])
+}
+
+// 文档版本历史
+model DocumentVersion {
+  id         String   @id @default(cuid())
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  title      String
+  content    String
+  plainText  String
+  wordCount  Int
+  version    Int
+  // 版本备注
+  note       String?
+  createdAt  DateTime @default(now())
+
+  @@index([documentId])
+  @@index([documentId, version])
 }
 
 // 小记
 model Note {
   id         String   @id @default(cuid())
   content    String
-  // 纯文本，用于搜索
-  plainText  String
-  userId     String
-  user       User     @relation(fields: [userId], references: [id])
+  // 纯文本（用于搜索）
+  plainText  String   @default("")
+  // 小记类型：note（普通小记）/ idea（想法）/ todo（待办）
+  type       String   @default("note")
+  // 是否收藏
+  isFavorite Boolean  @default(false)
+  // 是否置顶
   isPinned   Boolean  @default(false)
-  lastModifiedAt DateTime @default(now())
-  version    Int      @default(1)
+  // 可见性：public（公开）/ members（仅会员）/ private（仅自己）
+  visibility String   @default("private")
+  // 是否删除（软删除）
   isDeleted  Boolean  @default(false)
+  // 最后修改时间
+  lastModifiedAt DateTime @default(now())
+  userId     String
+  user       User   @relation(fields: [userId], references: [id])
   createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  updatedAt  DateTime @default(now())
 
   tags NoteTag[]
 
+  @@index([userId])
+  @@index([userId, type])
+  @@index([visibility])
   @@index([userId, isDeleted])
-  @@index([lastModifiedAt])
-  @@index([isPinned])
+}
+
+// 邮件订阅
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  // 是否已确认订阅
+  confirmed  Boolean  @default(false)
+  // 确认token
+  confirmToken String?
+  // 订阅来源
+  source    String?
+  createdAt DateTime @default(now())
+  // 最后发送时间
+  lastSentAt DateTime?
+
+  @@index([email])
+  @@index([confirmed])
 }
 
 // 标签
 model Tag {
-  id        String   @id @default(cuid())
-  name      String
-  color     String?
-  userId    String
+  id       String   @id @default(cuid())
+  name     String
+  color    String?
+  // 父标签ID（支持层级）
   parentId  String?
-  parent    Tag?     @relation("TagHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
-  children  Tag[]   @relation("TagHierarchy")
-  sortOrder Int     @default(0)
-  user      User     @relation(fields: [userId], references: [id])
+  parent    Tag?     @relation("TagChildren", fields: [parentId], references: [id], onDelete: Cascade)
+  children  Tag[]    @relation("TagChildren")
+  // 排序
+  sortOrder Int      @default(0)
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  // 标签使用次数
+  useCount Int      @default(0)
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
   documents DocumentTag[]
   notes     NoteTag[]
 
-  @@unique([userId, parentId, name])
   @@index([userId])
+  @@index([userId, name])
   @@index([parentId])
 }
 
-// 文档-标签 关联
+// 文档标签关联
 model DocumentTag {
   documentId String
   tagId      String
@@ -145,9 +244,10 @@ model DocumentTag {
   tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([documentId, tagId])
+  @@index([tagId])
 }
 
-// 小记-标签 关联
+// 小记标签关联
 model NoteTag {
   noteId String
   tagId  String
@@ -155,29 +255,32 @@ model NoteTag {
   tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([noteId, tagId])
-}
-
-// 同步状态记录
-model SyncState {
-  id           String   @id @default(cuid())
-  userId       String   @unique
-  // 最后一次同步的时间戳
-  lastSyncAt   DateTime @default(now())
-  // 设备ID
-  deviceId     String?
-  // 同步的实体类型和最新游标（JSON 存储）
-  cursors      String?  // JSON string
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  @@index([tagId])
 }
 
 // 用户设置
 model UserSettings {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id])
-  // 设置内容，JSON 格式（AI 配置、主题偏好等）
-  settings  String?  // JSON string
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String  @id @default(cuid())
+  userId        String  @unique
+  user          User    @relation(fields: [userId], references: [id])
+  // 博客标题
+  blogTitle     String?
+  // 博客副标题
+  blogSubtitle  String?
+  // 个人简介
+  bio           String?
+  // 头像URL
+  avatarUrl     String?
+  // 社交媒体链接
+  socialLinks   String? // JSON 格式存储
+  // 默认版权协议
+  defaultLicense String  @default("all-rights")
+  // 默认是否允许复制
+  defaultAllowCopy Boolean @default(true)
+  // 默认是否允许分享
+  defaultAllowShare Boolean @default(true)
+  // AI 配置（JSON 字符串）
+  aiConfig       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now())
 }

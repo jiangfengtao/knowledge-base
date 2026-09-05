@@ -30,7 +30,7 @@ export async function PUT(
   const user = await getDefaultUser();
   const body = await request.json();
 
-  const { title, content, plainText, isFavorite, isPublic, knowledgeBaseId, sortOrder } = body;
+  const { title, content, plainText, isFavorite, visibility, knowledgeBaseId, sortOrder, isPublic, videoUrl, videoDuration, isVideo, videoThumbnail } = body;
 
   const updateData: any = {
     lastModifiedAt: new Date(),
@@ -43,9 +43,18 @@ export async function PUT(
     updateData.wordCount = plainText.length;
   }
   if (isFavorite !== undefined) updateData.isFavorite = isFavorite;
-  if (isPublic !== undefined) updateData.isPublic = isPublic;
+  if (visibility !== undefined) updateData.visibility = visibility;
+  // 兼容旧版 isPublic 字段
+  if (isPublic !== undefined) {
+    updateData.visibility = isPublic ? "public" : "private";
+  }
   if (knowledgeBaseId !== undefined) updateData.knowledgeBaseId = knowledgeBaseId;
   if (sortOrder !== undefined) updateData.sortOrder = sortOrder;
+  // 视频相关字段
+  if (videoUrl !== undefined) updateData.videoUrl = videoUrl;
+  if (videoDuration !== undefined) updateData.videoDuration = videoDuration;
+  if (isVideo !== undefined) updateData.isVideo = isVideo;
+  if (videoThumbnail !== undefined) updateData.videoThumbnail = videoThumbnail;
 
   const doc = await prisma.document.update({
     where: {

@@ -29,7 +29,7 @@ type DocItem = {
   id: string;
   title: string;
   isFavorite: boolean;
-  isPublic: boolean;
+  visibility: string;
   wordCount: number;
 };
 
@@ -824,7 +824,7 @@ export default function Sidebar({ activeNav, onNavChange, onKbSelect }: SidebarP
                     }}
                     onClick={() => handleSelectKb(kb.id, kb.name)}
                   >
-                    <FileText size={13} className={clsx("flex-shrink-0", doc.isPublic ? "text-green-500" : "text-muted")} />
+                    <FileText size={13} className={clsx("flex-shrink-0", doc.visibility === "public" ? "text-green-500" : doc.visibility === "members" ? "text-amber-500" : "text-muted")} />
                     {isDocEditing ? (
                       <input
                         type="text"
@@ -852,8 +852,10 @@ export default function Sidebar({ activeNav, onNavChange, onKbSelect }: SidebarP
                       </span>
                     )}
                     {doc.isFavorite && <Star size={11} className="text-yellow-400 flex-shrink-0" fill="currentColor" />}
-                    {doc.isPublic && (
-                      <span className="text-[10px] text-green-500 flex-shrink-0">公开</span>
+                    {doc.visibility !== "private" && (
+                      <span className="text-[10px] text-green-500 flex-shrink-0">
+                        {doc.visibility === "public" ? "公开" : "会员"}
+                      </span>
                     )}
                   </div>
                   {/* after 指示线 */}
@@ -1388,14 +1390,14 @@ export default function Sidebar({ activeNav, onNavChange, onKbSelect }: SidebarP
               fetch(`/api/documents/${contextMenu.doc!.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ isPublic: !contextMenu.doc!.isPublic }),
+                body: JSON.stringify({ visibility: contextMenu.doc!.visibility === "private" ? "public" : "private" }),
               }).then(() => loadKnowledgeBases());
               setContextMenu(null);
             }}
             className="w-full flex items-center gap-2 px-3 py-2 text-sm text-ink hover:bg-[#f2f3f5] text-left"
           >
             <FileText size={14} />
-            {contextMenu.doc!.isPublic ? "设为私密" : "设为公开"}
+            {contextMenu.doc!.visibility === "private" ? "设为公开" : "设为私密"}
           </button>
           <div className="h-px bg-rule my-1" />
           <button

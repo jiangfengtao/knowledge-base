@@ -128,6 +128,7 @@ export default function KnowledgeBaseApp() {
                   onBack={handleBackToList}
                   isNew={isNewDoc}
                   kbId={currentKbId}
+                  onToggleSidebar={() => setMobileSidebarOpen(true)}
                 />
               </div>
             ) : (

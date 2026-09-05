@@ -7,7 +7,7 @@ export async function seedSamplePosts() {
 
   // 检查是否已经有公开文章了
   const publicCount = await prisma.document.count({
-    where: { userId: user.id, isPublic: true },
+    where: { userId: user.id, visibility: "public" },
   });
 
   if (publicCount > 0) {
@@ -179,7 +179,7 @@ export async function seedSamplePosts() {
         wordCount: plainText.length,
         knowledgeBaseId: techKb.id,
         userId: user.id,
-        isPublic: true,
+        visibility: "public",
       },
     });
   }
