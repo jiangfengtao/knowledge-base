@@ -25,6 +25,7 @@ import {
   Globe,
   BarChart3,
   ExternalLink,
+  Settings,
 } from "lucide-react";
 import clsx from "clsx";
 
@@ -904,6 +905,13 @@ export default function Sidebar({ activeNav, onNavChange, onKbSelect }: SidebarP
         </div>
         <span className="font-semibold text-ink flex-1">晓桃终生成长</span>
         <button
+          onClick={() => router.push("/settings")}
+          className="p-1.5 hover:bg-[#f2f3f5] rounded transition-colors flex-shrink-0"
+          title="账号设置"
+        >
+          <Settings size={16} className="text-muted" />
+        </button>
+        <button
           onClick={toggleCollapse}
           className="p-1.5 hover:bg-[#f2f3f5] rounded transition-colors flex-shrink-0"
           title="收起侧边栏"
@@ -1072,6 +1080,13 @@ export default function Sidebar({ activeNav, onNavChange, onKbSelect }: SidebarP
             <div className="text-xs text-muted truncate">{userEmail || "已同步"}</div>
           </div>
           <button
+            onClick={() => router.push("/settings")}
+            className="p-1.5 hover:bg-[#f2f3f5] rounded transition-colors"
+            title="账号设置"
+          >
+            <Settings size={16} className="text-muted" />
+          </button>
+          <button
             onClick={() => router.push("/wechat-setup")}
             className="p-1.5 hover:bg-[#f2f3f5] rounded transition-colors"
             title="微信接入"
@@ -1150,6 +1165,13 @@ export default function Sidebar({ activeNav, onNavChange, onKbSelect }: SidebarP
               title="数据看板"
             >
               <BarChart3 size={18} />
+            </button>
+            <button
+              onClick={() => router.push("/settings")}
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-muted hover:bg-[#f2f3f5] hover:text-accent transition-colors"
+              title="账号设置"
+            >
+              <Settings size={18} />
             </button>
             <button
               onClick={() => onNavChange("search")}

@@ -383,96 +383,97 @@ export default async function BlogHome({
 
           {/* 侧边栏 - 分类 */}
           <aside className="lg:w-64 flex-shrink-0">
-            <div className="bg-white border border-rule rounded-xl p-5 sticky top-20">
-              <h3 className="font-semibold text-ink mb-4 flex items-center gap-2">
-                <span className="w-1 h-4 bg-accent rounded-full" />
-                分类
-              </h3>
-              <div className="space-y-1">
-                <Link
-                  href="/blog"
-                  className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
-                    !category
-                      ? "bg-accent-soft text-accent-deep font-medium"
-                      : "text-ink hover:bg-[#f9fafb]"
-                  }`}
-                >
-                  <span>全部文章</span>
-                  <span className="text-xs">{totalPosts}</span>
-                </Link>
-                {publicKbs.map((kb) => (
+            <div className="lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto space-y-4">
+              {/* 分类列表 */}
+              <div className="bg-white border border-rule rounded-xl p-5">
+                <h3 className="font-semibold text-ink mb-4 flex items-center gap-2">
+                  <span className="w-1 h-4 bg-accent rounded-full" />
+                  分类
+                </h3>
+                <div className="space-y-1">
                   <Link
-                    key={kb.id}
-                    href={`/blog?cat=${kb.id}`}
+                    href="/blog"
                     className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
-                      category === kb.id
+                      !category
                         ? "bg-accent-soft text-accent-deep font-medium"
                         : "text-ink hover:bg-[#f9fafb]"
                     }`}
                   >
-                    <span className="flex items-center gap-2">
-                      <span>{kb.icon || "📁"}</span>
-                      <span>{kb.name}</span>
-                    </span>
-                    <span className="text-xs">
-                      {kb._count.documents}
-                    </span>
+                    <span>全部文章</span>
+                    <span className="text-xs">{totalPosts}</span>
                   </Link>
-                ))}
-              </div>
-            </div>
-
-            {/* 标签云入口 */}
-            <Link
-              href="/blog/tags"
-              className="block bg-white border border-rule rounded-xl p-5 mt-4 hover:border-accent/30 hover:shadow-md transition-all group"
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 rounded-lg bg-accent-soft flex items-center justify-center">
-                  <Tag size={16} className="text-accent-deep" />
-                </div>
-                <h3 className="font-semibold text-ink group-hover:text-accent-deep transition-colors">
-                  标签云
-                </h3>
-              </div>
-              <p className="text-xs text-muted leading-relaxed">
-                浏览全部标签，发现更多感兴趣的内容
-              </p>
-            </Link>
-
-            {/* 邮件订阅卡片 */}
-            <div className="mt-4">
-              <SubscribeBox source="blog_sidebar" variant="sidebar" />
-            </div>
-
-            {/* 关于小卡片 */}
-            <div className="bg-gradient-to-br from-accent-soft to-white border border-accent/20 rounded-xl p-5 mt-4">
-              <div className="flex items-center gap-3 mb-3">
-                {avatarUrl ? (
-                  <img
-                    src={avatarUrl}
-                    alt={blogTitle}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm"
-                  />
-                ) : (
-                  <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center text-white font-bold text-lg">
-                    桃
-                  </div>
-                )}
-                <div>
-                  <h3 className="font-semibold text-ink">{blogTitle}</h3>
-                  <p className="text-xs text-muted">知识博主</p>
+                  {publicKbs.map((kb) => (
+                    <Link
+                      key={kb.id}
+                      href={`/blog?cat=${kb.id}`}
+                      className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
+                        category === kb.id
+                          ? "bg-accent-soft text-accent-deep font-medium"
+                          : "text-ink hover:bg-[#f9fafb]"
+                      }`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span>{kb.icon || "📁"}</span>
+                        <span>{kb.name}</span>
+                      </span>
+                      <span className="text-xs">
+                        {kb._count.documents}
+                      </span>
+                    </Link>
+                  ))}
                 </div>
               </div>
-              <p className="text-sm text-muted leading-relaxed">
-                {bio}
-              </p>
+
+              {/* 标签云入口 */}
               <Link
-                href="/about"
-                className="inline-block mt-3 text-xs text-accent-deep hover:text-accent transition-colors"
+                href="/blog/tags"
+                className="block bg-white border border-rule rounded-xl p-5 hover:border-accent/30 hover:shadow-md transition-all group"
               >
-                了解更多 →
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-accent-soft flex items-center justify-center">
+                    <Tag size={16} className="text-accent-deep" />
+                  </div>
+                  <h3 className="font-semibold text-ink group-hover:text-accent-deep transition-colors">
+                    标签云
+                  </h3>
+                </div>
+                <p className="text-xs text-muted leading-relaxed">
+                  浏览全部标签，发现更多感兴趣的内容
+                </p>
               </Link>
+
+              {/* 邮件订阅卡片 */}
+              <SubscribeBox source="blog_sidebar" variant="sidebar" />
+
+              {/* 关于小卡片 */}
+              <div className="bg-gradient-to-br from-accent-soft to-white border border-accent/20 rounded-xl p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  {avatarUrl ? (
+                    <img
+                      src={avatarUrl}
+                      alt={blogTitle}
+                      className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center text-white font-bold text-lg">
+                      桃
+                    </div>
+                  )}
+                  <div>
+                    <h3 className="font-semibold text-ink">{blogTitle}</h3>
+                    <p className="text-xs text-muted">知识博主</p>
+                  </div>
+                </div>
+                <p className="text-sm text-muted leading-relaxed">
+                  {bio}
+                </p>
+                <Link
+                  href="/about"
+                  className="inline-block mt-3 text-xs text-accent-deep hover:text-accent transition-colors"
+                >
+                  了解更多 →
+                </Link>
+              </div>
             </div>
           </aside>
         </div>

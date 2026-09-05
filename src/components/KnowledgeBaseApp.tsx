@@ -8,7 +8,7 @@ import NotesView from "@/components/NotesView";
 import SearchView from "@/components/SearchView";
 import FavoritesView from "@/components/FavoritesView";
 import TagsView from "@/components/TagsView";
-import { Globe, Film, BarChart3, ExternalLink, FileText, PenLine, Sparkles, ArrowRight, Lightbulb, BookOpen } from "lucide-react";
+import { Globe, Film, BarChart3, ExternalLink, FileText, PenLine, Sparkles, ArrowRight, Lightbulb, BookOpen, Settings } from "lucide-react";
 
 // 懒加载重型组件（包含 Tiptap 编辑器）
 const DocumentView = dynamic(() => import("@/components/DocumentView"), {
@@ -141,6 +141,13 @@ export default function KnowledgeBaseApp() {
             >
               <BarChart3 size={13} />
               <span className="hidden sm:inline">数据</span>
+            </a>
+            <a
+              href="/settings"
+              className="flex items-center gap-1 px-2.5 py-1.5 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-600 hover:text-white transition-colors font-medium"
+            >
+              <Settings size={13} />
+              <span className="hidden sm:inline">设置</span>
             </a>
           </div>
         </div>

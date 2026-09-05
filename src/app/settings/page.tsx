@@ -224,7 +224,7 @@ export default function SettingsPage() {
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-ink mb-2">
+              <label className="block text-base font-medium text-ink mb-2">
                 博客标题
               </label>
               <input
@@ -232,12 +232,12 @@ export default function SettingsPage() {
                 value={blogTitle}
                 onChange={(e) => setBlogTitle(e.target.value)}
                 placeholder="输入博客标题"
-                className="w-full px-3 py-2.5 border border-rule rounded-lg text-sm outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+                className="w-full px-3 py-3 border border-rule rounded-lg text-base outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-ink mb-2">
+              <label className="block text-base font-medium text-ink mb-2">
                 博客副标题
               </label>
               <input
@@ -245,12 +245,12 @@ export default function SettingsPage() {
                 value={blogSubtitle}
                 onChange={(e) => setBlogSubtitle(e.target.value)}
                 placeholder="输入博客副标题"
-                className="w-full px-3 py-2.5 border border-rule rounded-lg text-sm outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+                className="w-full px-3 py-3 border border-rule rounded-lg text-base outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-ink mb-2">
+              <label className="block text-base font-medium text-ink mb-2">
                 头像 URL
               </label>
               <div className="flex gap-3">
@@ -269,13 +269,13 @@ export default function SettingsPage() {
                   value={avatarUrl}
                   onChange={(e) => setAvatarUrl(e.target.value)}
                   placeholder="输入头像图片链接"
-                  className="flex-1 px-3 py-2.5 border border-rule rounded-lg text-sm outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+                  className="flex-1 px-3 py-3 border border-rule rounded-lg text-base outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-ink mb-2">
+              <label className="block text-base font-medium text-ink mb-2">
                 个人简介
               </label>
               <textarea
@@ -283,7 +283,7 @@ export default function SettingsPage() {
                 onChange={(e) => setBio(e.target.value)}
                 placeholder="介绍一下你自己..."
                 rows={4}
-                className="w-full px-3 py-2.5 border border-rule rounded-lg text-sm outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all resize-none"
+                className="w-full px-3 py-3 border border-rule rounded-lg text-base outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all resize-none"
               />
             </div>
           </div>
@@ -302,7 +302,7 @@ export default function SettingsPage() {
               const Icon = field.icon;
               return (
                 <div key={field.key}>
-                  <label className="block text-sm font-medium text-ink mb-2">
+                  <label className="block text-base font-medium text-ink mb-2">
                     {field.label}
                   </label>
                   <div className="relative">
@@ -339,13 +339,13 @@ export default function SettingsPage() {
 
           <div className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-ink mb-2">
+              <label className="block text-base font-medium text-ink mb-2">
                 默认版权协议
               </label>
               <select
                 value={defaultLicense}
                 onChange={(e) => setDefaultLicense(e.target.value)}
-                className="w-full px-3 py-2.5 border border-rule rounded-lg text-sm outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all bg-white"
+                className="w-full px-3 py-3 border border-rule rounded-lg text-base outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all bg-white"
               >
                 {licenseOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>

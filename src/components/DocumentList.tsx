@@ -81,16 +81,16 @@ export default function DocumentList({
           <h2 className="font-semibold text-ink truncate">{kbName}</h2>
           <button
             onClick={onNewDoc}
-            className="flex items-center gap-1 px-2 py-1 text-sm text-accent-deep hover:bg-accent-soft rounded transition-colors flex-shrink-0"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-base text-white bg-accent hover:bg-accent-2 rounded-lg transition-colors flex-shrink-0 font-medium shadow-sm"
           >
-            <Plus size={16} />
+            <Plus size={18} />
             <span>新建</span>
           </button>
         </div>
         {/* 搜索 */}
         <div className="relative mb-2">
           <Search
-            size={14}
+            size={15}
             className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted"
           />
           <input
@@ -98,7 +98,7 @@ export default function DocumentList({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="搜索文档..."
-            className="w-full pl-8 pr-3 py-1.5 bg-[#f2f3f5] rounded text-sm outline-none focus:bg-white focus:ring-1 focus:ring-accent transition-all"
+            className="w-full pl-9 pr-3 py-2 bg-[#f2f3f5] rounded-lg text-sm outline-none focus:bg-white focus:ring-1 focus:ring-accent transition-all"
           />
         </div>
         {/* 排序 */}
@@ -144,23 +144,23 @@ export default function DocumentList({
                 <FileText size={16} className="text-muted mt-0.5 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <h3 className="font-medium text-sm text-ink truncate flex-1">
+                    <h3 className="font-medium text-base text-ink truncate flex-1">
                       {doc.title}
                     </h3>
                     {doc.isFavorite && (
                       <Star
-                        size={12}
+                        size={14}
                         className="text-yellow-500 fill-yellow-500 flex-shrink-0"
                       />
                     )}
                   </div>
-                  <p className="text-xs text-muted mt-1 line-clamp-2 leading-relaxed">
+                  <p className="text-sm text-muted mt-1 line-clamp-2 leading-relaxed">
                     {doc.plainText.slice(0, 80) || "暂无内容"}
                     {doc.plainText.length > 80 ? "..." : ""}
                   </p>
-                  <div className="flex items-center gap-3 mt-2 text-xs text-muted">
+                  <div className="flex items-center gap-3 mt-2 text-sm text-muted">
                     <span className="flex items-center gap-1">
-                      <Clock size={11} />
+                      <Clock size={12} />
                       {dayjs(doc.lastModifiedAt).format("MM-DD")}
                     </span>
                     <span>{doc.wordCount} 字</span>

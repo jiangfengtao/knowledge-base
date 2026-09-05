@@ -310,14 +310,16 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
             <>
               <button
                 onClick={togglePublic}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 text-sm rounded transition-colors ${
-                  visibility !== "private"
-                    ? "bg-accent-soft text-accent-deep"
-                    : "text-muted hover:bg-[#f2f3f5]"
+                className={`flex items-center gap-2 px-4 py-2 text-base font-medium rounded-lg transition-all border-2 ${
+                  visibility === "public"
+                    ? "bg-green-50 text-green-600 border-green-400 hover:bg-green-100"
+                    : visibility === "members"
+                    ? "bg-amber-50 text-amber-600 border-amber-400 hover:bg-amber-100"
+                    : "bg-red-50 text-red-600 border-red-400 hover:bg-red-100"
                 }`}
                 title={visibility !== "private" ? "已公开，点击设为私密" : "点击公开文章"}
               >
-                {visibility !== "private" ? <Globe size={15} /> : <Lock size={15} />}
+                {visibility !== "private" ? <Globe size={18} /> : <Lock size={18} />}
                 <span>
                   {visibility === "public" ? "公开" : visibility === "members" ? "会员" : "私密"}
                 </span>
@@ -325,12 +327,12 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
 
               <button
                 onClick={toggleFavorite}
-                className={`p-1.5 rounded transition-colors ${
+                className={`p-2 rounded transition-colors ${
                   isFavorite ? "text-yellow-500" : "text-muted hover:bg-[#f2f3f5]"
                 }`}
                 aria-label={isFavorite ? "取消收藏" : "收藏"}
               >
-                <Star size={18} className={isFavorite ? "fill-current" : ""} />
+                <Star size={20} className={isFavorite ? "fill-current" : ""} />
               </button>
             </>
           )}
@@ -338,42 +340,42 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
           {!isNew && (
             <button
               onClick={() => setShowVideoPanel(true)}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 text-sm rounded transition-colors ${
+              className={`flex items-center gap-2 px-3 py-2 text-base rounded-lg transition-colors ${
                 isVideo
-                  ? "bg-accent-soft text-accent-deep"
+                  ? "bg-accent-soft text-accent-deep font-medium"
                   : "text-muted hover:bg-[#f2f3f5]"
               }`}
               title="视频设置"
               aria-label="视频设置"
             >
-              <Video size={15} />
+              <Video size={18} />
               <span>视频</span>
             </button>
           )}
 
           <button
-            className="p-1.5 text-muted hover:bg-[#f2f3f5] rounded transition-colors"
+            className="p-2 text-muted hover:bg-[#f2f3f5] rounded transition-colors"
             aria-label="分享"
           >
-            <Share2 size={18} />
+            <Share2 size={20} />
           </button>
 
           {!isNew && (
             <button
               onClick={handleDelete}
-              className="p-1.5 text-muted hover:bg-red-50 hover:text-red-500 rounded transition-colors"
+              className="p-2 text-muted hover:bg-red-50 hover:text-red-500 rounded transition-colors"
               title="删除文档"
               aria-label="删除文档"
             >
-              <Trash2 size={18} />
+              <Trash2 size={20} />
             </button>
           )}
 
           <button
-            className="p-1.5 text-muted hover:bg-[#f2f3f5] rounded transition-colors"
+            className="p-2 text-muted hover:bg-[#f2f3f5] rounded transition-colors"
             aria-label="更多"
           >
-            <MoreHorizontal size={18} />
+            <MoreHorizontal size={20} />
           </button>
         </div>
 
@@ -402,6 +404,33 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
               <Edit3 size={18} />
             </button>
           )}
+          {!isNew && (
+            <button
+              onClick={togglePublic}
+              className={`p-2.5 rounded transition-colors min-w-11 min-h-11 flex items-center justify-center ${
+                visibility === "public"
+                  ? "bg-green-50 text-green-600"
+                  : visibility === "members"
+                  ? "bg-amber-50 text-amber-600"
+                  : "bg-red-50 text-red-600"
+              }`}
+              title={visibility !== "private" ? "已公开，点击设为私密" : "点击公开文章"}
+              aria-label={visibility !== "private" ? "已公开" : "私密"}
+            >
+              {visibility !== "private" ? <Globe size={18} /> : <Lock size={18} />}
+            </button>
+          )}
+          {!isNew && (
+            <button
+              onClick={() => setShowVideoPanel(true)}
+              className={`p-2.5 rounded transition-colors min-w-11 min-h-11 flex items-center justify-center ${
+                isVideo ? "bg-accent-soft text-accent-deep" : "text-muted hover:bg-[#f2f3f5]"
+              }`}
+              aria-label="视频设置"
+            >
+              <Video size={18} />
+            </button>
+          )}
           <button
             className="p-2.5 text-muted hover:bg-[#f2f3f5] rounded transition-colors min-w-11 min-h-11 flex items-center justify-center"
             aria-label="更多"
@@ -424,10 +453,10 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
               onChange={(e) => setTitle(e.target.value)}
               onFocus={handleTitleFocus}
               placeholder="输入文档标题..."
-              className="w-full text-3xl sm:text-2xl sm:text-3xl font-semibold text-ink outline-none border-none bg-transparent mb-4 placeholder:text-muted/50"
+              className="w-full text-3xl sm:text-3xl font-semibold text-ink outline-none border-none bg-transparent mb-4 placeholder:text-muted/50"
             />
           ) : (
-            <h1 className="text-2xl sm:text-3xl font-semibold text-ink mb-3">{title}</h1>
+            <h1 className="text-3xl sm:text-4xl font-semibold text-ink mb-3">{title}</h1>
           )}
 
           {/* 元信息 - 移动端简化显示 */}

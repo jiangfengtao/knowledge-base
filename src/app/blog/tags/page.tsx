@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { Tag, Hash, ArrowLeft, History, Crown } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import MobileBottomNav from "@/components/MobileBottomNav";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -190,7 +191,7 @@ export default async function BlogTagsPage() {
       </main>
 
       {/* 页脚 */}
-      <footer className="border-t border-rule bg-white">
+      <footer className="border-t border-rule bg-white pb-16 md:pb-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 text-center text-sm text-muted">
           <p>© {new Date().getFullYear()} 晓桃终生成长 · 用知识点亮成长之路</p>
           <p className="mt-2 text-xs">
@@ -198,6 +199,9 @@ export default async function BlogTagsPage() {
           </p>
         </div>
       </footer>
+
+      {/* 移动端底部导航 */}
+      <MobileBottomNav />
     </div>
   );
 }
