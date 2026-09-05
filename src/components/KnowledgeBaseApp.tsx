@@ -177,6 +177,10 @@ export default function KnowledgeBaseApp() {
                   isNew={isNewDoc}
                   kbId={currentKbId}
                   onToggleSidebar={() => setMobileSidebarOpen(true)}
+                  onSaved={(newDocId) => {
+                    setIsNewDoc(false);
+                    setSelectedDocId(newDocId);
+                  }}
                 />
               </div>
             ) : (

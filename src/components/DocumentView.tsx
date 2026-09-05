@@ -42,9 +42,10 @@ type DocViewProps = {
   isNew?: boolean;
   kbId?: string;
   onToggleSidebar?: () => void;
+  onSaved?: (newDocId: string) => void;
 };
 
-export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSidebar }: DocViewProps) {
+export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSidebar, onSaved }: DocViewProps) {
   const [mode, setMode] = useState<"view" | "edit">(isNew ? "edit" : "view");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -137,6 +138,10 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
           setMode("view");
           setMobilePreview(false);
           setUpdatedAt(new Date(data.data.lastModifiedAt));
+          // 通知父组件文档已保存，更新 isNew 状态
+          if (onSaved && data.data.id) {
+            onSaved(data.data.id);
+          }
         }
       } else if (docId) {
         // 更新文档
