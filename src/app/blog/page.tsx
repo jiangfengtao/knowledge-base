@@ -24,6 +24,11 @@ export default async function BlogHome({
     ];
   }
 
+  // 分类筛选
+  if (category) {
+    where.knowledgeBaseId = category;
+  }
+
   const posts = await prisma.document.findMany({
     where,
     orderBy: { lastModifiedAt: "desc" },

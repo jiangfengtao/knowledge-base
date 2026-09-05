@@ -85,9 +85,12 @@ model Document {
   tags DocumentTag[]
 
   @@index([knowledgeBaseId])
-  @@index([userId])
+  @@index([userId, isDeleted])
+  @@index([userId, knowledgeBaseId])
   @@index([lastModifiedAt])
   @@index([isDeleted])
+  @@index([isPublic, isDeleted])
+  @@index([isFavorite, userId])
 }
 
 // 小记
@@ -107,8 +110,9 @@ model Note {
 
   tags NoteTag[]
 
-  @@index([userId])
+  @@index([userId, isDeleted])
   @@index([lastModifiedAt])
+  @@index([isPinned])
 }
 
 // 标签
@@ -129,6 +133,8 @@ model Tag {
   notes     NoteTag[]
 
   @@unique([userId, parentId, name])
+  @@index([userId])
+  @@index([parentId])
 }
 
 // 文档-标签 关联

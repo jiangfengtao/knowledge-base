@@ -95,11 +95,13 @@ export async function POST(request: Request) {
     });
 
     // 设置 httpOnly Cookie，浏览器自动携带
+    const isProduction = process.env.NODE_ENV === "production";
     response.cookies.set("auth_token", token, {
       httpOnly: true,
       path: "/",
       maxAge: 30 * 24 * 60 * 60, // 30天
       sameSite: "lax",
+      ...(isProduction && { secure: true }),
     });
 
     return response;

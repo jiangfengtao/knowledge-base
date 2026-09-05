@@ -3,6 +3,48 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Calendar, Clock, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { sanitizeHtml } from "@/lib/sanitize";
+import type { Metadata } from "next";
+
+// 动态生成文章元数据
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
+  const post = await prisma.document.findUnique({
+    where: {
+      id: params.id,
+      isPublic: true,
+      isDeleted: false,
+    },
+    select: { title: true, plainText: true, lastModifiedAt: true },
+  });
+
+  if (!post) {
+    return {
+      title: "文章不存在",
+    };
+  }
+
+  const description = post.plainText.slice(0, 150) || "晓桃终生成长";
+
+  return {
+    title: post.title,
+    description,
+    openGraph: {
+      title: post.title,
+      description,
+      type: "article",
+      publishedTime: post.lastModifiedAt.toISOString(),
+      url: `https://xiaotaotop.com/blog/post/${params.id}`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description,
+    },
+  };
+}
 
 // 文章详情页
 export default async function BlogPostPage({
@@ -52,8 +94,31 @@ export default async function BlogPostPage({
     }),
   ]);
 
+  // 结构化数据
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    datePublished: post.lastModifiedAt.toISOString(),
+    dateModified: post.lastModifiedAt.toISOString(),
+    author: {
+      "@type": "Person",
+      name: "晓桃",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "晓桃终生成长",
+    },
+    description: post.plainText.slice(0, 200),
+    wordCount: post.wordCount,
+  };
+
   return (
     <div className="min-h-screen bg-bg">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* 顶部导航 */}
       <header className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-rule">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
