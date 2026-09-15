@@ -580,17 +580,25 @@ export default async function BlogPostPage({
           </div>
         )}
 
-        {/* 评论区 */}
+        {/* 留言引导区 */}
         {canViewFull && (
-          <div className="bg-white border border-rule rounded-2xl p-6 sm:p-8 mb-8">
+          <div className="bg-gradient-to-br from-accent-soft/50 to-white border border-accent/20 rounded-2xl p-6 sm:p-8 mb-8">
             <h2 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
               <span className="w-1 h-5 bg-accent rounded-full" />
-              评论
+              聊聊你的想法
             </h2>
-            <div id="comments-container">
-              <p className="text-sm text-muted text-center py-8">
-                评论加载中...
+            <div className="text-center py-4">
+              <div className="text-4xl mb-4">💬</div>
+              <p className="text-ink font-medium mb-2">喜欢这篇文章？想和我聊聊？</p>
+              <p className="text-sm text-muted mb-6 leading-relaxed">
+                目前评论功能还在准备中<br/>
+                欢迎到我的公众号「晓桃自学英语录」后台留言<br/>
+                每一条我都会认真看的 ✨
               </p>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-rule rounded-full text-sm text-ink shadow-sm">
+                <span className="text-accent">📮</span>
+                <span>公众号：晓桃自学英语录</span>
+              </div>
             </div>
           </div>
         )}

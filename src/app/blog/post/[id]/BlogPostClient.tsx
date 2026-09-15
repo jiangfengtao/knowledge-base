@@ -293,31 +293,6 @@ export default function BlogPostClient({
       checkDevTools();
     }
 
-    // 加载 Giscus 评论（仅完整文章显示）
-    if (!isMemberOnly) {
-      const script = document.createElement("script");
-      script.src = "https://giscus.app/client.js";
-      script.async = true;
-      script.crossOrigin = "anonymous";
-      script.setAttribute("data-repo", "xiaotaotop/knowledge-base");
-      script.setAttribute("data-repo-id", "");
-      script.setAttribute("data-category", "General");
-      script.setAttribute("data-category-id", "");
-      script.setAttribute("data-mapping", "pathname");
-      script.setAttribute("data-strict", "0");
-      script.setAttribute("data-reactions-enabled", "1");
-      script.setAttribute("data-emit-metadata", "0");
-      script.setAttribute("data-input-position", "bottom");
-      script.setAttribute("data-theme", "light");
-      script.setAttribute("data-lang", "zh-CN");
-
-      const container = document.getElementById("comments-container");
-      if (container) {
-        container.innerHTML = "";
-        container.appendChild(script);
-      }
-    }
-
     return () => {
       document.removeEventListener("copy", handleCopy);
       document.removeEventListener("contextmenu", handleContextMenu);
