@@ -485,7 +485,6 @@ export default async function BlogPostPage({
             className={`doc-content text-ink ${
               !post.allowCopy ? "select-none" : ""
             }`}
-            onContextMenu={(e) => !post.allowCopy && e.preventDefault()}
             dangerouslySetInnerHTML={{ __html: displayContent }}
           />
 
