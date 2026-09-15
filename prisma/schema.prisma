@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -141,6 +141,8 @@ model Document {
   tags DocumentTag[]
   // 版本历史
   versions DocumentVersion[]
+  // 评论
+  comments Comment[]
 
   @@index([knowledgeBaseId])
   @@index([userId, isDeleted])
@@ -291,4 +293,35 @@ model UserSettings {
   aiConfig       String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @default(now())
+}
+
+// 评论
+model Comment {
+  id            String   @id @default(cuid())
+  documentId    String
+  document      Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  // 评论者昵称
+  nickname      String
+  // 评论者邮箱（可选，用于回复通知）
+  email         String?
+  // 评论内容
+  content       String
+  // 父评论 ID（用于回复）
+  parentId      String?
+  parent        Comment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  // 回复的评论
+  replies       Comment[] @relation("CommentReplies")
+  // 状态：pending / approved / rejected
+  status        String   @default("approved")
+  // IP 地址（用于防垃圾评论）
+  ipAddress     String?
+  // 用户代理
+  userAgent     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([documentId])
+  @@index([documentId, status])
+  @@index([parentId])
+  @@index([createdAt])
 }

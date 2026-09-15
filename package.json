@@ -11,7 +11,7 @@
     "start": "next start",
     "lint": "next lint",
     "setup:prisma": "node scripts/setup-prisma.mjs",
-    "prebuild": "node scripts/setup-prisma.mjs && prisma generate",
+    "prebuild": "node scripts/setup-prisma.mjs && prisma generate && prisma db push",
     "predev": "node scripts/setup-prisma.mjs",
     "postinstall": "prisma generate",
     "db:push": "prisma db push",

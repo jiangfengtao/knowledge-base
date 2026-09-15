@@ -5,6 +5,7 @@ import { Calendar, Clock, ArrowLeft, ChevronLeft, ChevronRight, Lock, Shield, Sh
 import { sanitizeHtml } from "@/lib/sanitize";
 import type { Metadata } from "next";
 import BlogPostClient from "./BlogPostClient";
+import BlogPostComments from "./BlogPostComments";
 import ThemeToggle from "@/components/ThemeToggle";
 import ShareButtons from "@/components/ShareButtons";
 import MobileBottomNav, { MobileBackButton } from "@/components/MobileBottomNav";
@@ -580,24 +581,22 @@ export default async function BlogPostPage({
           </div>
         )}
 
-        {/* 留言引导区 */}
+        {/* 评论区 */}
+        {canViewFull && <BlogPostComments documentId={params.id} />}
+
+        {/* 公众号留言引导 */}
         {canViewFull && (
-          <div className="bg-gradient-to-br from-accent-soft/50 to-white border border-accent/20 rounded-2xl p-6 sm:p-8 mb-8">
-            <h2 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
-              <span className="w-1 h-5 bg-accent rounded-full" />
-              聊聊你的想法
-            </h2>
-            <div className="text-center py-4">
-              <div className="text-4xl mb-4">💬</div>
-              <p className="text-ink font-medium mb-2">喜欢这篇文章？想和我聊聊？</p>
-              <p className="text-sm text-muted mb-6 leading-relaxed">
-                目前评论功能还在准备中<br/>
-                欢迎到我的公众号「晓桃自学英语录」后台留言<br/>
-                每一条我都会认真看的 ✨
-              </p>
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-rule rounded-full text-sm text-ink shadow-sm">
-                <span className="text-accent">📮</span>
-                <span>公众号：晓桃自学英语录</span>
+          <div className="bg-gradient-to-br from-accent-soft/30 to-white border border-accent/15 rounded-2xl p-5 sm:p-6 mb-8">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-2xl shadow-sm">
+                📮
+              </div>
+              <div className="flex-1">
+                <p className="font-medium text-ink text-sm">想私下聊聊？</p>
+                <p className="text-xs text-muted">欢迎到公众号后台留言，每一条我都会看</p>
+              </div>
+              <div className="px-3 py-1.5 bg-white border border-rule rounded-full text-xs text-ink shadow-sm">
+                晓桃自学英语录
               </div>
             </div>
           </div>
