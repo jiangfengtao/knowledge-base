@@ -25,7 +25,7 @@ export default async function BlogHome({
   const blogTitle = settings?.blogTitle || "晓桃终生成长";
   const blogSubtitle =
     settings?.blogSubtitle ||
-    "记录学习、思考与成长的点滴。关于英语学习、个人成长、以及那些让生活更美好的小发现。";
+    "记录一个37岁普通人从零自学英语的真实过程，关于英语学习、个人成长、以及那些让生活更美好的小发现。";
   const bio =
     settings?.bio ||
     "一个在终生学习路上的普通人。这里记录我的学习笔记、思考和成长。";
