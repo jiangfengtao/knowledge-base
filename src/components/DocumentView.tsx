@@ -16,8 +16,13 @@ import {
   Trash2,
   PanelLeft,
   Video,
+  Mic,
   X,
   Clock3,
+  Play,
+  Pause,
+  Square,
+  Upload,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import dayjs from "dayjs";
@@ -65,6 +70,20 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
   const [isVideo, setIsVideo] = useState(false);
   const [showVideoPanel, setShowVideoPanel] = useState(false);
   const [savingVideo, setSavingVideo] = useState(false);
+  // 音频相关
+  const [audioUrl, setAudioUrl] = useState("");
+  const [audioTitle, setAudioTitle] = useState("");
+  const [audioDuration, setAudioDuration] = useState("");
+  const [isAudio, setIsAudio] = useState(false);
+  const [showAudioPanel, setShowAudioPanel] = useState(false);
+  const [savingAudio, setSavingAudio] = useState(false);
+  // 录音相关
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const recordingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // 加载文档内容
   useEffect(() => {
@@ -93,6 +112,10 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
           setVideoThumbnail(data.data.videoThumbnail || "");
           setVideoDuration(data.data.videoDuration || "");
           setIsVideo(data.data.isVideo || false);
+          setAudioUrl(data.data.audioUrl || "");
+          setAudioTitle(data.data.audioTitle || "");
+          setAudioDuration(data.data.audioDuration || "");
+          setIsAudio(data.data.isAudio || false);
         }
       } catch (e) {
         console.error("Load doc error:", e);
@@ -191,6 +214,126 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
       console.error("Save video error:", e);
     } finally {
       setSavingVideo(false);
+    }
+  };
+
+  // 开始录音
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          audioChunksRef.current.push(e.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64data = reader.result as string;
+          setAudioUrl(base64data);
+          // 计算时长
+          const audio = new Audio(base64data);
+          audio.onloadedmetadata = () => {
+            const dur = Math.floor(audio.duration);
+            const mins = Math.floor(dur / 60);
+            const secs = dur % 60;
+            setAudioDuration(`${mins}:${secs.toString().padStart(2, "0")}`);
+          };
+        };
+        reader.readAsDataURL(audioBlob);
+        // 停止所有轨道
+        stream.getTracks().forEach((track) => track.stop());
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+      setRecordingTime(0);
+
+      // 计时器
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingTime((t) => t + 1);
+      }, 1000);
+    } catch (e) {
+      console.error("录音失败:", e);
+      alert("无法访问麦克风，请检查浏览器权限设置");
+    }
+  };
+
+  // 停止录音
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+        recordingTimerRef.current = null;
+      }
+    }
+  };
+
+  // 格式化录音时间
+  const formatRecordingTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  // 处理文件上传
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // 检查文件大小（20MB以内建议用base64，更大的建议用URL方式）
+    if (file.size > 20 * 1024 * 1024) {
+      alert("音频文件过大（超过20MB），建议先上传到云存储后使用链接方式");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64data = reader.result as string;
+      setAudioUrl(base64data);
+      // 计算时长
+      const audio = new Audio(base64data);
+      audio.onloadedmetadata = () => {
+        const dur = Math.floor(audio.duration);
+        const mins = Math.floor(dur / 60);
+        const secs = dur % 60;
+        setAudioDuration(`${mins}:${secs.toString().padStart(2, "0")}`);
+      };
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // 保存音频设置
+  const handleSaveAudio = async () => {
+    if (!docId || savingAudio) return;
+    setSavingAudio(true);
+    try {
+      const res = await fetch(`/api/documents/${docId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          audioUrl: audioUrl || null,
+          audioTitle: audioTitle || null,
+          audioDuration: audioDuration || null,
+          isAudio,
+        }),
+      });
+      const data = await res.json();
+      if (data.data) {
+        setShowAudioPanel(false);
+      }
+    } catch (e) {
+      console.error("Save audio error:", e);
+    } finally {
+      setSavingAudio(false);
     }
   };
 
@@ -358,6 +501,22 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
             </button>
           )}
 
+          {!isNew && (
+            <button
+              onClick={() => setShowAudioPanel(true)}
+              className={`flex items-center gap-2 px-3 py-2 text-base rounded-lg transition-colors ${
+                isAudio
+                  ? "bg-purple-100 text-purple-600 font-medium"
+                  : "text-muted hover:bg-[#f2f3f5]"
+              }`}
+              title="音频设置"
+              aria-label="音频设置"
+            >
+              <Mic size={18} />
+              <span>音频</span>
+            </button>
+          )}
+
           <button
             className="p-2 text-muted hover:bg-[#f2f3f5] rounded transition-colors"
             aria-label="分享"
@@ -436,6 +595,17 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
               <Video size={18} />
             </button>
           )}
+          {!isNew && (
+            <button
+              onClick={() => setShowAudioPanel(true)}
+              className={`p-2.5 rounded transition-colors min-w-11 min-h-11 flex items-center justify-center ${
+                isAudio ? "bg-purple-100 text-purple-600" : "text-muted hover:bg-[#f2f3f5]"
+              }`}
+              aria-label="音频设置"
+            >
+              <Mic size={18} />
+            </button>
+          )}
           <button
             className="p-2.5 text-muted hover:bg-[#f2f3f5] rounded transition-colors min-w-11 min-h-11 flex items-center justify-center"
             aria-label="更多"
@@ -495,6 +665,15 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
                 )}
               </span>
             )}
+            {isAudio && (
+              <span className="flex items-center gap-1 text-purple-600 bg-purple-100 px-2 py-0.5 rounded-full">
+                <Mic size={12} />
+                <span>音频文章</span>
+                {audioDuration && (
+                  <span className="text-purple-600/70">· {audioDuration}</span>
+                )}
+              </span>
+            )}
           </div>
 
           {/* 视频播放器 */}
@@ -508,6 +687,35 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
               >
                 您的浏览器不支持视频播放。
               </video>
+            </div>
+          )}
+
+          {/* 音频播放器 */}
+          {isAudio && audioUrl && !isEditing && (
+            <div className="mb-6 sm:mb-8">
+              <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl p-5 border border-purple-200">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Mic size={24} className="text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-ink truncate">
+                      {audioTitle || title}
+                    </h3>
+                    <p className="text-sm text-purple-600">
+                      {audioDuration ? `时长 ${audioDuration}` : "音频内容"}
+                    </p>
+                  </div>
+                </div>
+                <audio
+                  src={audioUrl}
+                  controls
+                  className="w-full"
+                  preload="metadata"
+                >
+                  您的浏览器不支持音频播放。
+                </audio>
+              </div>
             </div>
           )}
 
@@ -631,6 +839,173 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
                 className="px-4 py-2 text-sm bg-accent text-white hover:bg-accent-2 rounded-lg transition-colors disabled:opacity-50"
               >
                 {savingVideo ? "保存中..." : "保存"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 音频设置面板 */}
+      {showAudioPanel && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-rule">
+              <h3 className="text-base font-semibold text-ink">音频设置</h3>
+              <button
+                onClick={() => setShowAudioPanel(false)}
+                className="p-1.5 text-muted hover:bg-[#f2f3f5] rounded transition-colors"
+                aria-label="关闭"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="px-5 py-4 space-y-4 max-h-[70vh] overflow-y-auto">
+              {/* 录音区域 */}
+              <div className="bg-purple-50 rounded-xl p-4 border border-purple-100">
+                <p className="text-sm font-medium text-ink mb-3">🎙️ 直接录音</p>
+                {isRecording ? (
+                  <div className="flex items-center justify-center gap-4">
+                    <div className="flex items-center gap-2 text-red-500">
+                      <span className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+                      <span className="font-mono text-lg font-semibold">
+                        {formatRecordingTime(recordingTime)}
+                      </span>
+                    </div>
+                    <button
+                      onClick={stopRecording}
+                      className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                    >
+                      <Square size={16} />
+                      <span>结束录音</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center gap-3">
+                    <button
+                      onClick={startRecording}
+                      className="flex items-center gap-2 px-5 py-2.5 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors font-medium"
+                    >
+                      <Mic size={18} />
+                      <span>开始录音</span>
+                    </button>
+                    <span className="text-xs text-muted">支持浏览器直接录音</span>
+                  </div>
+                )}
+                {audioUrl && !isRecording && (
+                  <div className="mt-3 pt-3 border-t border-purple-200">
+                    <p className="text-xs text-muted mb-2">录音预览：</p>
+                    <audio src={audioUrl} controls className="w-full h-8" />
+                  </div>
+                )}
+              </div>
+
+              {/* 上传文件 */}
+              <div>
+                <label className="block text-sm font-medium text-ink mb-2">
+                  上传音频文件
+                </label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="audio/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-rule rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-colors text-muted hover:text-purple-600"
+                >
+                  <Upload size={18} />
+                  <span>选择音频文件（mp3/wav/m4a 等，20MB以内）</span>
+                </button>
+              </div>
+
+              {/* 分隔线 */}
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-px bg-rule" />
+                <span className="text-xs text-muted">或使用音频链接</span>
+                <div className="flex-1 h-px bg-rule" />
+              </div>
+
+              {/* 音频地址 */}
+              <div>
+                <label className="block text-sm font-medium text-ink mb-1.5">
+                  音频地址
+                </label>
+                <input
+                  type="text"
+                  value={audioUrl.startsWith("data:") ? "" : audioUrl}
+                  onChange={(e) => setAudioUrl(e.target.value)}
+                  placeholder="https://example.com/audio.mp3"
+                  className="w-full px-3 py-2 text-sm border border-rule rounded-lg focus:outline-none focus:border-purple-400 transition-colors"
+                />
+                <p className="text-xs text-muted mt-1">支持 mp3、m4a、wav 等音频链接</p>
+              </div>
+
+              {/* 音频标题 */}
+              <div>
+                <label className="block text-sm font-medium text-ink mb-1.5">
+                  音频标题（可选）
+                </label>
+                <input
+                  type="text"
+                  value={audioTitle}
+                  onChange={(e) => setAudioTitle(e.target.value)}
+                  placeholder="如：第1期 · 聊聊我的成长经历"
+                  className="w-full px-3 py-2 text-sm border border-rule rounded-lg focus:outline-none focus:border-purple-400 transition-colors"
+                />
+              </div>
+
+              {/* 音频时长 */}
+              <div>
+                <label className="block text-sm font-medium text-ink mb-1.5">
+                  音频时长（可选）
+                </label>
+                <input
+                  type="text"
+                  value={audioDuration}
+                  onChange={(e) => setAudioDuration(e.target.value)}
+                  placeholder="如 05:30"
+                  className="w-full px-3 py-2 text-sm border border-rule rounded-lg focus:outline-none focus:border-purple-400 transition-colors"
+                />
+                <p className="text-xs text-muted mt-1">录音或上传后会自动识别时长</p>
+              </div>
+
+              {/* 设为音频内容开关 */}
+              <div className="flex items-center justify-between py-1">
+                <span className="text-sm font-medium text-ink">设为音频文章</span>
+                <button
+                  onClick={() => setIsAudio(!isAudio)}
+                  className={`relative w-11 h-6 rounded-full transition-colors ${
+                    isAudio ? "bg-purple-500" : "bg-[#e5e7eb]"
+                  }`}
+                  role="switch"
+                  aria-checked={isAudio}
+                >
+                  <span
+                    className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform"
+                    style={{
+                      transform: isAudio
+                        ? "translateX(22px)"
+                        : "translateX(2px)",
+                    }}
+                  />
+                </button>
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-rule bg-[#fafbfc]">
+              <button
+                onClick={() => setShowAudioPanel(false)}
+                className="px-4 py-2 text-sm text-muted hover:bg-[#f2f3f5] rounded-lg transition-colors"
+              >
+                取消
+              </button>
+              <button
+                onClick={handleSaveAudio}
+                disabled={savingAudio}
+                className="px-4 py-2 text-sm bg-purple-500 text-white hover:bg-purple-600 rounded-lg transition-colors disabled:opacity-50"
+              >
+                {savingAudio ? "保存中..." : "保存"}
               </button>
             </div>
           </div>

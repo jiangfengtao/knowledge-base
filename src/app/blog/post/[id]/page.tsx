@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Calendar, Clock, ArrowLeft, ChevronLeft, ChevronRight, Eye, Lock, Shield, Share2, BookOpen, Check } from "lucide-react";
+import { Calendar, Clock, ArrowLeft, ChevronLeft, ChevronRight, Eye, Lock, Shield, Share2, BookOpen, Check, Mic } from "lucide-react";
 import { sanitizeHtml } from "@/lib/sanitize";
 import type { Metadata } from "next";
 import BlogPostClient from "./BlogPostClient";
@@ -448,6 +448,35 @@ export default async function BlogPostPage({
                   时长：{post.videoDuration}
                 </p>
               )}
+            </div>
+          )}
+
+          {/* 音频播放器 */}
+          {post.isAudio && post.audioUrl && (
+            <div className="mb-8">
+              <div className="bg-gradient-to-r from-purple-50 via-purple-100 to-purple-50 rounded-2xl p-5 sm:p-6 border border-purple-200 shadow-sm">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <Mic size={28} className="text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h2 className="text-base sm:text-lg font-bold text-ink truncate">
+                      {post.audioTitle || post.title}
+                    </h2>
+                    <p className="text-sm text-purple-600 mt-0.5">
+                      {post.audioDuration ? `时长 ${post.audioDuration}` : "音频内容"}
+                    </p>
+                  </div>
+                </div>
+                <audio
+                  src={post.audioUrl}
+                  controls
+                  className="w-full"
+                  preload="metadata"
+                >
+                  您的浏览器不支持音频播放。
+                </audio>
+              </div>
             </div>
           )}
 

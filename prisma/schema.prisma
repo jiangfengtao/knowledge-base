@@ -127,6 +127,14 @@ model Document {
   isVideo        Boolean  @default(false)
   // 视频封面图
   videoThumbnail String?
+  // 音频地址（支持 mp3、m4a、wav 等）
+  audioUrl       String?
+  // 音频时长（如 "05:30"）
+  audioDuration  String?
+  // 是否是音频内容
+  isAudio        Boolean  @default(false)
+  // 音频标题（如"第1期：聊聊技术成长"）
+  audioTitle     String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
