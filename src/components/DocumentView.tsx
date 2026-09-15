@@ -23,6 +23,7 @@ import {
   Pause,
   Square,
   Upload,
+  FileText,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import dayjs from "dayjs";
@@ -46,11 +47,12 @@ type DocViewProps = {
   onBack?: () => void;
   isNew?: boolean;
   kbId?: string;
+  initialType?: "article" | "video" | "audio";
   onToggleSidebar?: () => void;
   onSaved?: (newDocId: string) => void;
 };
 
-export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSidebar, onSaved }: DocViewProps) {
+export default function DocumentView({ docId, onBack, isNew, kbId, initialType = "article", onToggleSidebar, onSaved }: DocViewProps) {
   const [mode, setMode] = useState<"view" | "edit">(isNew ? "edit" : "view");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -67,14 +69,14 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
   const [videoUrl, setVideoUrl] = useState("");
   const [videoThumbnail, setVideoThumbnail] = useState("");
   const [videoDuration, setVideoDuration] = useState("");
-  const [isVideo, setIsVideo] = useState(false);
+  const [isVideo, setIsVideo] = useState(isNew ? initialType === "video" : false);
   const [showVideoPanel, setShowVideoPanel] = useState(false);
   const [savingVideo, setSavingVideo] = useState(false);
   // 音频相关
   const [audioUrl, setAudioUrl] = useState("");
   const [audioTitle, setAudioTitle] = useState("");
   const [audioDuration, setAudioDuration] = useState("");
-  const [isAudio, setIsAudio] = useState(false);
+  const [isAudio, setIsAudio] = useState(isNew ? initialType === "audio" : false);
   const [showAudioPanel, setShowAudioPanel] = useState(false);
   const [savingAudio, setSavingAudio] = useState(false);
   // 录音相关
@@ -153,6 +155,8 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
             content,
             plainText,
             knowledgeBaseId: kbId,
+            isVideo,
+            isAudio,
           }),
         });
         const data = await res.json();
@@ -404,10 +408,10 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
   const isEditing = mode === "edit" && !mobilePreview;
 
   return (
-    <div className="flex-1 flex overflow-hidden bg-white">
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+    <div className="flex-1 relative overflow-hidden bg-white min-h-0">
+      <div className="absolute inset-0 flex flex-col overflow-hidden">
       {/* 顶部工具栏 */}
-      <div className="flex items-center justify-between px-4 sm:px-6 py-2 sm:py-3 border-b border-rule gap-2">
+      <div className="flex items-center justify-between px-4 sm:px-6 py-2 sm:py-3 border-b border-rule gap-2 flex-shrink-0">
         <div className="flex items-center gap-1 flex-shrink-0">
           {/* 移动端侧边栏切换按钮 */}
           {onToggleSidebar && (
@@ -615,8 +619,67 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
         </div>
       </div>
 
+      {/* 内容类型切换标签 */}
+      <div className="flex items-center justify-center gap-1 sm:gap-2 px-4 py-3 border-b border-rule bg-[#fafbfc]">
+        <button
+          onClick={() => {
+            setIsVideo(false);
+            setIsAudio(false);
+          }}
+          className={`flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-2.5 text-sm sm:text-base font-medium rounded-lg transition-all ${
+            !isVideo && !isAudio
+              ? "bg-white text-accent shadow-sm border border-rule"
+              : "text-muted hover:bg-white hover:text-ink"
+          }`}
+        >
+          <FileText size={18} />
+          <span>文章</span>
+        </button>
+        <button
+          onClick={() => {
+            if (isNew) return;
+            setIsVideo(true);
+            setIsAudio(false);
+            setShowVideoPanel(true);
+          }}
+          className={`flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-2.5 text-sm sm:text-base font-medium rounded-lg transition-all ${
+            isVideo
+              ? "bg-white text-accent shadow-sm border border-rule"
+              : "text-muted hover:bg-white hover:text-ink"
+          } ${isNew ? "opacity-50 cursor-not-allowed" : ""}`}
+          title={isNew ? "请先保存文章后再设置视频" : ""}
+        >
+          <Video size={18} />
+          <span>视频</span>
+        </button>
+        <button
+          onClick={() => {
+            if (isNew) return;
+            setIsAudio(true);
+            setIsVideo(false);
+            setShowAudioPanel(true);
+          }}
+          className={`flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-2.5 text-sm sm:text-base font-medium rounded-lg transition-all ${
+            isAudio
+              ? "bg-white text-purple-600 shadow-sm border border-rule"
+              : "text-muted hover:bg-white hover:text-ink"
+          } ${isNew ? "opacity-50 cursor-not-allowed" : ""}`}
+          title={isNew ? "请先保存文章后再设置音频" : ""}
+        >
+          <Mic size={18} />
+          <span>音频</span>
+        </button>
+      </div>
+
       {/* 内容区 */}
-      <div className="flex-1 overflow-y-auto">
+      <div 
+        className="flex-1 overflow-y-auto min-h-0 scroll-smooth doc-scroll-area"
+        style={{ 
+          overflowY: "auto",
+          scrollbarGutter: "stable",
+          WebkitOverflowScrolling: "touch",
+        }}
+      >
         {/* 移动端编辑模式下底部工具栏要留出空间 */}
         <div className={`max-w-3xl mx-auto px-4 sm:px-8 py-4 sm:py-8 ${isEditing ? "pb-24 md:pb-8" : ""}`}>
           {/* 标题 */}
@@ -739,7 +802,7 @@ export default function DocumentView({ docId, onBack, isNew, kbId, onToggleSideb
       </div>
 
       {/* 右侧大纲面板 - 仅大屏幕显示 */}
-      <aside className="hidden xl:flex w-56 border-l border-rule flex-shrink-0 overflow-hidden bg-[#fafbfc]">
+      <aside className="hidden xl:flex w-56 border-l border-rule flex-shrink-0 overflow-hidden bg-[#fafbfc] flex-shrink-0">
         <DocOutline content={content} editable={isEditing} />
       </aside>
 

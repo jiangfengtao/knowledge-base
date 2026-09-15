@@ -12,6 +12,8 @@ import {
   ChevronRight,
   Plus,
   FileText,
+  Video,
+  Mic,
   MessageCircle,
   Sparkles,
   LogOut,
@@ -534,7 +536,10 @@ export default function Sidebar({ activeNav, onNavChange, onKbSelect }: SidebarP
   };
 
   const navItems = [
-    { id: "kb", label: "知识库", icon: <BookOpen size={18} /> },
+    { id: "kb", label: "工作台", icon: <BookOpen size={18} /> },
+    { id: "articles", label: "文章", icon: <FileText size={18} /> },
+    { id: "videos", label: "视频", icon: <Video size={18} /> },
+    { id: "audios", label: "音频", icon: <Mic size={18} /> },
     { id: "notes", label: "小记", icon: <StickyNote size={18} /> },
     { id: "tags", label: "标签", icon: <Tag size={18} /> },
     { id: "search", label: "搜索", icon: <Search size={18} /> },
@@ -1121,7 +1126,7 @@ export default function Sidebar({ activeNav, onNavChange, onKbSelect }: SidebarP
     // 折叠状态：窄边栏，只显示展开按钮和图标
     return (
       <>
-        <aside className="w-14 bg-white border-r border-rule flex flex-col flex-shrink-0 h-screen items-center py-3 gap-2">
+        <aside className="w-14 bg-white border-r border-rule flex flex-col flex-shrink-0 h-full items-center py-3 gap-2">
           {/* Logo + 展开按钮 */}
           <button
             onClick={toggleCollapse}
@@ -1215,7 +1220,7 @@ export default function Sidebar({ activeNav, onNavChange, onKbSelect }: SidebarP
     <>
       {/* 侧边栏 - 展开状态 */}
       <aside
-        className="w-64 bg-white border-r border-rule flex flex-col flex-shrink-0 h-screen transition-all duration-200"
+        className="w-64 bg-white border-r border-rule flex flex-col flex-shrink-0 h-full transition-all duration-200"
       >
         {sidebarContent}
       </aside>

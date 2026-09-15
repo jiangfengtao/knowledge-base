@@ -40,6 +40,8 @@ export async function GET(request: Request) {
       isFavorite: true,
       lastModifiedAt: true,
       knowledgeBaseId: true,
+      isVideo: true,
+      isAudio: true,
     },
   });
 
@@ -52,7 +54,7 @@ export async function POST(request: Request) {
   const user = await getDefaultUser();
   const body = await request.json();
 
-  const { title, content, plainText, knowledgeBaseId } = body;
+  const { title, content, plainText, knowledgeBaseId, isVideo, isAudio } = body;
 
   // 查找或创建默认知识库
   let kbId = knowledgeBaseId;
@@ -71,6 +73,8 @@ export async function POST(request: Request) {
       wordCount: plainText?.length || 0,
       knowledgeBaseId: kbId,
       userId: user.id,
+      isVideo: isVideo || false,
+      isAudio: isAudio || false,
     },
   });
 
