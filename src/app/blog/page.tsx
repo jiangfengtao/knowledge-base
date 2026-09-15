@@ -28,7 +28,7 @@ export default async function BlogHome({
     "记录一个37岁普通人从零自学英语的真实过程，关于英语学习、个人成长、以及那些让生活更美好的小发现。";
   const bio =
     settings?.bio ||
-    "一个在终生学习路上的普通人。这里记录我的学习笔记、思考和成长。";
+    "你好，我是晓桃。37岁，从零开始学英语。这里记录我不完美的每一步——计划、卡壳、着急、进步。没有逆袭神话，只有一个普通人真实地在走。";
   const avatarUrl = settings?.avatarUrl || "";
 
   // 查询公开文档

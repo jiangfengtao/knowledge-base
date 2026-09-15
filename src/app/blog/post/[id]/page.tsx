@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Calendar, Clock, ArrowLeft, ChevronLeft, ChevronRight, Eye, Lock, Shield, Share2, BookOpen, Check, Mic } from "lucide-react";
+import { Calendar, Clock, ArrowLeft, ChevronLeft, ChevronRight, Lock, Shield, Share2, BookOpen, Check, Mic } from "lucide-react";
 import { sanitizeHtml } from "@/lib/sanitize";
 import type { Metadata } from "next";
 import BlogPostClient from "./BlogPostClient";
@@ -380,10 +380,6 @@ export default async function BlogPostPage({
                 {post.wordCount} 字
               </span>
               <span>阅读约 {readingTime} 分钟</span>
-              <span className="flex items-center gap-1.5" id="view-count">
-                <Eye size={14} />
-                {post.viewCount} 阅读
-              </span>
             </div>
 
             {/* 标签 */}

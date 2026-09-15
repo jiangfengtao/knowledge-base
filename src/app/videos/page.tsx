@@ -300,15 +300,6 @@ export default async function VideosPage({
                             day: "numeric",
                           })}
                         </span>
-                        {video.viewCount > 0 && (
-                          <span className="flex items-center gap-1">
-                            <PlayCircle size={12} />
-                            {video.viewCount > 1000
-                              ? `${(video.viewCount / 1000).toFixed(1)}k`
-                              : video.viewCount}{" "}
-                            次观看
-                          </span>
-                        )}
                       </div>
                       {video.knowledgeBase && (
                         <span className="flex items-center gap-1 px-2 py-0.5 bg-accent-soft text-accent-deep rounded-full text-xs font-medium">
