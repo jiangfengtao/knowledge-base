@@ -467,6 +467,31 @@ export default async function BlogHome({
                 <p className="text-sm text-muted leading-relaxed">
                   {bio}
                 </p>
+                {/* 个人标签 */}
+                <div className="mt-3 space-y-1.5">
+                  <div className="flex flex-wrap gap-1.5">
+                    <span className="inline-block px-2 py-0.5 bg-accent/10 text-accent-deep text-xs rounded-full">
+                      终生学习者
+                    </span>
+                    <span className="inline-block px-2 py-0.5 bg-accent/10 text-accent-deep text-xs rounded-full">
+                      知识分享者
+                    </span>
+                    <span className="inline-block px-2 py-0.5 bg-accent/10 text-accent-deep text-xs rounded-full">
+                      自媒体创作者
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    <span className="inline-block px-2 py-0.5 bg-purple-50 text-purple-600 text-xs rounded-full">
+                      零基础学英语
+                    </span>
+                    <span className="inline-block px-2 py-0.5 bg-amber-50 text-amber-600 text-xs rounded-full">
+                      💡 真实成长记录
+                    </span>
+                    <span className="inline-block px-2 py-0.5 bg-rose-50 text-rose-600 text-xs rounded-full">
+                      ✨ 37岁重新开始
+                    </span>
+                  </div>
+                </div>
                 <Link
                   href="/about"
                   className="inline-block mt-3 text-xs text-accent-deep hover:text-accent transition-colors"
