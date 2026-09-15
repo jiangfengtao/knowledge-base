@@ -8,6 +8,8 @@ const PUBLIC_API_ROUTES = [
   "/api/auth/logout",
   "/api/seed",
   "/api/webhook",
+  "/api/comments",
+  "/api/subscribe",
 ];
 
 // Token 有效期：30 天
