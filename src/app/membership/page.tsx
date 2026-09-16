@@ -13,7 +13,7 @@ import type { Metadata } from "next";
 import ThemeToggle from "@/components/ThemeToggle";
 import MobileBottomNav from "@/components/MobileBottomNav";
 import MembershipPlans from "./MembershipPlans";
-import { MEMBERSHIP_PLANS } from "@/app/api/orders/route";
+import { MEMBERSHIP_PLANS } from "@/lib/membership-plans";
 
 export const metadata: Metadata = {
   title: "加入会员 - 晓桃终生成长",

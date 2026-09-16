@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth-server";
 import { NextResponse } from "next/server";
-import { xss } from "@/lib/sanitize";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 // 获取帖子列表
 export async function GET(request: Request) {
@@ -66,8 +66,8 @@ export async function POST(request: Request) {
     data: {
       authorId: user.id,
       authorName: user.name,
-      title: xss(title.trim()),
-      content: xss(content),
+      title: sanitizeHtml(title.trim()),
+      content: sanitizeHtml(content),
       plainText,
       type,
       category: category || null,

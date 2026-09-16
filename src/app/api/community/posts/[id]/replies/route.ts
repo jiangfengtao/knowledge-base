@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth-server";
 import { NextResponse } from "next/server";
-import { xss } from "@/lib/sanitize";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 // 获取帖子的所有回复（树形结构）
 export async function GET(
@@ -68,7 +68,7 @@ export async function POST(
       postId: params.id,
       authorId: user.id,
       authorName: user.name,
-      content: xss(content.trim()),
+      content: sanitizeHtml(content.trim()),
       parentId: parentId || null,
     },
   });
