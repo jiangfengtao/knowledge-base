@@ -45,7 +45,7 @@ export async function POST(
   // 检查帖子是否存在
   const post = await prisma.communityPost.findUnique({
     where: { id: params.id },
-    select: { id: true, authorId: true, title: true },
+    select: { id: true, authorId: true, title: true, status: true },
   });
 
   if (!post || post.status !== "active") {
