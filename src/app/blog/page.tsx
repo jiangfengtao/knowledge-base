@@ -6,6 +6,9 @@ import ThemeToggle from "@/components/ThemeToggle";
 import SubscribeBox from "@/components/SubscribeBox";
 import MobileBottomNav from "@/components/MobileBottomNav";
 
+// 每 5 分钟重新生成一次，无需每次请求都查数据库
+export const revalidate = 300;
+
 // 前台博客首页 - 公开文章列表
 export default async function BlogHome({
   searchParams,
@@ -60,73 +63,74 @@ export default async function BlogHome({
     };
   }
 
-  const posts = await prisma.document.findMany({
-    where,
-    orderBy: { lastModifiedAt: "desc" },
-    take: 20,
-    select: {
-      id: true,
-      title: true,
-      plainText: true,
-      wordCount: true,
-      lastModifiedAt: true,
-      knowledgeBase: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-    },
-  });
-
-  // 获取最新的视频文章（用于首页视频专区）
-  const videoPosts = await prisma.document.findMany({
-    where: {
-      visibility: "public",
-      isDeleted: false,
-      isVideo: true,
-    },
-    orderBy: { lastModifiedAt: "desc" },
-    take: 4,
-    select: {
-      id: true,
-      title: true,
-      plainText: true,
-      videoDuration: true,
-      videoThumbnail: true,
-      lastModifiedAt: true,
-      knowledgeBase: { select: { id: true, name: true, icon: true } },
-    },
-  });
-
-  // 获取所有公开的分类
-  const publicKbs = await prisma.knowledgeBase.findMany({
-    where: {
-      documents: {
-        some: {
-          visibility: "public",
-          isDeleted: false,
-        },
-      },
-    },
-    select: {
-      id: true,
-      name: true,
-      icon: true,
-      _count: {
-        select: {
-          documents: {
-            where: { visibility: "public", isDeleted: false },
+  // 并行查询所有数据，避免串行等待
+  const [posts, videoPosts, publicKbs, totalPosts] = await Promise.all([
+    // 文章列表（只取摘要前200字，避免传输大段 plainText）
+    prisma.document.findMany({
+      where,
+      orderBy: { lastModifiedAt: "desc" },
+      take: 20,
+      select: {
+        id: true,
+        title: true,
+        plainText: true,
+        wordCount: true,
+        lastModifiedAt: true,
+        knowledgeBase: {
+          select: {
+            id: true,
+            name: true,
           },
         },
       },
-    },
-    orderBy: { sortOrder: "asc" },
-  });
-
-  const totalPosts = await prisma.document.count({
-    where: { visibility: "public", isDeleted: false },
-  });
+    }),
+    // 获取最新的视频文章
+    prisma.document.findMany({
+      where: {
+        visibility: "public",
+        isDeleted: false,
+        isVideo: true,
+      },
+      orderBy: { lastModifiedAt: "desc" },
+      take: 4,
+      select: {
+        id: true,
+        title: true,
+        videoDuration: true,
+        videoThumbnail: true,
+        lastModifiedAt: true,
+        knowledgeBase: { select: { id: true, name: true, icon: true } },
+      },
+    }),
+    // 获取所有公开的分类
+    prisma.knowledgeBase.findMany({
+      where: {
+        documents: {
+          some: {
+            visibility: "public",
+            isDeleted: false,
+          },
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        icon: true,
+        _count: {
+          select: {
+            documents: {
+              where: { visibility: "public", isDeleted: false },
+            },
+          },
+        },
+      },
+      orderBy: { sortOrder: "asc" },
+    }),
+    // 文章总数
+    prisma.document.count({
+      where: { visibility: "public", isDeleted: false },
+    }),
+  ]);
 
   return (
     <div className="min-h-screen bg-bg">

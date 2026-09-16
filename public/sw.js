@@ -1,13 +1,17 @@
-// 晓桃终生成长 - Service Worker
-const CACHE_NAME = "xiaotao-v1";
-const STATIC_CACHE = "xiaotao-static-v1";
-const RUNTIME_CACHE = "xiaotao-runtime-v1";
+// 晓桃终生成长 - Service Worker (优化版)
+const CACHE_VERSION = "xiaotao-v2";
+const STATIC_CACHE = `xiaotao-static-${CACHE_VERSION}`;
+const RUNTIME_CACHE = `xiaotao-runtime-${CACHE_VERSION}`;
+const PAGE_CACHE = `xiaotao-page-${CACHE_VERSION}`;
 
 // 预缓存的静态资源
 const PRECACHE_URLS = [
   "/",
   "/login",
   "/blog",
+  "/about",
+  "/videos",
+  "/timeline",
   "/manifest.json",
   "/icon-192.png",
   "/icon-512.png",
@@ -19,7 +23,15 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(STATIC_CACHE)
-      .then((cache) => cache.addAll(PRECACHE_URLS))
+      .then((cache) =>
+        Promise.allSettled(
+          PRECACHE_URLS.map((url) =>
+            cache.add(url).catch(() => {
+              // 预缓存失败不影响安装
+            })
+          )
+        )
+      )
       .then(() => self.skipWaiting())
   );
 });
@@ -32,7 +44,12 @@ self.addEventListener("activate", (event) => {
       .then((cacheNames) =>
         Promise.all(
           cacheNames
-            .filter((name) => name !== STATIC_CACHE && name !== RUNTIME_CACHE)
+            .filter(
+              (name) =>
+                name !== STATIC_CACHE &&
+                name !== RUNTIME_CACHE &&
+                name !== PAGE_CACHE
+            )
             .map((name) => caches.delete(name))
         )
       )
@@ -45,15 +62,21 @@ self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
+  // 只处理同源请求
+  if (url.origin !== self.location.origin) return;
+
   // API 请求：网络优先，不缓存
   if (url.pathname.startsWith("/api/")) {
     return;
   }
 
-  // 静态资源：缓存优先
+  // GET 请求以外的请求直接放行
+  if (request.method !== "GET") return;
+
+  // 静态资源：缓存优先（长期缓存）
   if (
     url.pathname.startsWith("/_next/static/") ||
-    url.pathname.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff2?)$/)
+    url.pathname.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff2?|avif|webp)$/)
   ) {
     event.respondWith(
       caches.open(STATIC_CACHE).then((cache) =>
@@ -61,7 +84,10 @@ self.addEventListener("fetch", (event) => {
           (cached) =>
             cached ||
             fetch(request).then((response) => {
-              cache.put(request, response.clone());
+              // 只缓存有效的响应
+              if (response.status === 200) {
+                cache.put(request, response.clone());
+              }
               return response;
             })
         )
@@ -70,11 +96,34 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // 页面请求：网络优先，回退缓存
+  // HTML 页面：stale-while-revalidate 策略
+  // 先返回缓存（快），同时在后台更新缓存（新）
+  if (request.headers.get("accept")?.includes("text/html")) {
+    event.respondWith(
+      caches.open(PAGE_CACHE).then(async (cache) => {
+        const cached = await cache.match(request);
+
+        // 后台更新
+        const networkFetch = fetch(request)
+          .then((response) => {
+            if (response.status === 200) {
+              cache.put(request, response.clone());
+            }
+            return response;
+          })
+          .catch(() => cached);
+
+        // 有缓存就先返回缓存，没有就等网络请求
+        return cached || networkFetch;
+      })
+    );
+    return;
+  }
+
+  // 其他资源：网络优先，回退缓存
   event.respondWith(
     fetch(request)
       .then((response) => {
-        // 缓存成功的页面请求
         if (response.status === 200) {
           const responseClone = response.clone();
           caches.open(RUNTIME_CACHE).then((cache) => {
@@ -83,15 +132,6 @@ self.addEventListener("fetch", (event) => {
         }
         return response;
       })
-      .catch(() => {
-        // 网络失败时回退缓存
-        return caches.match(request).then((cached) => {
-          if (cached) return cached;
-          // 离线回退页面
-          if (request.headers.get("accept")?.includes("text/html")) {
-            return caches.match("/login");
-          }
-        });
-      })
+      .catch(() => caches.match(request))
   );
 });

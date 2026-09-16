@@ -5,7 +5,7 @@ import { PlayCircle, Calendar, Clock, History, Tag, Crown, Film, TrendingUp } fr
 import ThemeToggle from "@/components/ThemeToggle";
 import MobileBottomNav from "@/components/MobileBottomNav";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300; // 每5分钟重新生成
 
 // 视频专栏页面 - 展示所有公开的视频文章
 export default async function VideosPage({

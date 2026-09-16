@@ -1,16 +1,26 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { Calendar, Clock, ArrowLeft, ChevronLeft, ChevronRight, Lock, Shield, Share2, BookOpen, Check, Mic } from "lucide-react";
 import { sanitizeHtml } from "@/lib/sanitize";
 import type { Metadata } from "next";
 import BlogPostClient from "./BlogPostClient";
-import BlogPostComments from "./BlogPostComments";
 import ThemeToggle from "@/components/ThemeToggle";
 import ShareButtons from "@/components/ShareButtons";
 import MobileBottomNav, { MobileBackButton } from "@/components/MobileBottomNav";
 import { getCurrentUser } from "@/lib/auth-server";
 import SubscribeBox from "@/components/SubscribeBox";
+
+// 懒加载评论区组件（仅在滚动到页面底部时才加载）
+const BlogPostComments = dynamic(() => import("./BlogPostComments"), {
+  loading: () => (
+    <div className="flex justify-center py-8">
+      <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+    </div>
+  ),
+  ssr: false,
+});
 
 // 动态生成文章元数据
 export async function generateMetadata({
@@ -147,7 +157,8 @@ export default async function BlogPostPage({
     ? { in: ["public", "members"] }
     : "public";
 
-  const [prevPost, nextPost] = await Promise.all([
+  // 并行查询上一篇、下一篇、相关文章、系列文章
+  const [prevPost, nextPost, relatedPosts, seriesData] = await Promise.all([
     prisma.document.findFirst({
       where: {
         visibility: visibilityFilter as any,
@@ -166,52 +177,51 @@ export default async function BlogPostPage({
       orderBy: { lastModifiedAt: "desc" },
       select: { id: true, title: true },
     }),
+    // 相关文章（同分类下的其他文章）
+    post.knowledgeBaseId
+      ? prisma.document.findMany({
+          where: {
+            visibility: visibilityFilter as any,
+            isDeleted: false,
+            knowledgeBaseId: post.knowledgeBaseId,
+            id: { not: post.id },
+          },
+          orderBy: { lastModifiedAt: "desc" },
+          take: 5,
+          select: { id: true, title: true, lastModifiedAt: true },
+        })
+      : Promise.resolve([]),
+    // 系列文章信息
+    post.seriesId
+      ? prisma.document.findUnique({
+          where: { id: post.seriesId, isDeleted: false },
+          select: { id: true, title: true, visibility: true },
+        })
+      : Promise.resolve(null),
   ]);
 
-  // 相关文章（同分类下的其他文章）
-  const relatedPosts = post.knowledgeBaseId
-    ? await prisma.document.findMany({
-        where: {
-          visibility: visibilityFilter as any,
-          isDeleted: false,
-          knowledgeBaseId: post.knowledgeBaseId,
-          id: { not: post.id },
-        },
-        orderBy: { lastModifiedAt: "desc" },
-        take: 5,
-        select: { id: true, title: true, lastModifiedAt: true },
-      })
-    : [];
-
-  // 系列文章（如果当前文章属于某个系列）
+  // 处理系列文章
   let seriesPosts: { id: string; title: string; seriesOrder: number; visibility: string }[] = [];
   let seriesInfo: { id: string; title: string } | null = null;
   let currentSeriesIndex = 0;
 
-  if (post.seriesId) {
-    // 查询系列信息（系列本身是一个 isSeries=true 的文档）
-    const seriesDoc = await prisma.document.findUnique({
-      where: { id: post.seriesId, isDeleted: false },
-      select: { id: true, title: true, visibility: true },
+  if (seriesData && (seriesData.visibility === "public" || (user?.isMember && seriesData.visibility === "members") || user?.id === post.userId)) {
+    seriesInfo = { id: seriesData.id, title: seriesData.title };
+
+    // 查询同一系列的所有文章
+    seriesPosts = await prisma.document.findMany({
+      where: {
+        seriesId: post.seriesId,
+        isDeleted: false,
+        visibility: visibilityFilter as any,
+      },
+      orderBy: { seriesOrder: "asc" },
+      select: { id: true, title: true, seriesOrder: true, visibility: true },
     });
 
-    if (seriesDoc && (seriesDoc.visibility === "public" || (user?.isMember && seriesDoc.visibility === "members") || user?.id === post.userId)) {
-      seriesInfo = { id: seriesDoc.id, title: seriesDoc.title };
-
-      // 查询同一系列的所有文章
-      seriesPosts = await prisma.document.findMany({
-        where: {
-          seriesId: post.seriesId,
-          isDeleted: false,
-          visibility: visibilityFilter as any,
-        },
-        orderBy: { seriesOrder: "asc" },
-        select: { id: true, title: true, seriesOrder: true, visibility: true },
-      });
-
-      // 计算当前文章在系列中的位置（从 1 开始）
-      currentSeriesIndex =
-        seriesPosts.findIndex((p) => p.id === post.id) + 1;
+    // 计算当前文章在系列中的位置（从 1 开始）
+    currentSeriesIndex =
+      seriesPosts.findIndex((p) => p.id === post.id) + 1;
     }
   }
 

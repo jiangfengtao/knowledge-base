@@ -40,6 +40,8 @@ function formatNumber(num: number): string {
   return num.toString();
 }
 
+export const revalidate = 3600; // 关于页每小时重新生成一次
+
 export default async function AboutPage() {
   const user = await getDefaultUser();
   const settings = await prisma.userSettings.findUnique({

@@ -5,11 +5,21 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: '**' },
     ],
+    // 图片优化配置
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 86400, // 图片缓存 24 小时
   },
   experimental: {
     serverActions: {
       bodySizeLimit: '5mb',
     },
+    // 优化包导入
+    optimizePackageImports: [
+      'lucide-react',
+      'react-markdown',
+    ],
   },
   // 安全响应头
   async headers() {
@@ -41,6 +51,13 @@ const nextConfig = {
             ].join('; '),
           },
           { key: 'X-DNS-Prefetch-Control', value: 'on' },
+        ],
+      },
+      {
+        // 静态资源长期缓存
+        source: '/_next/static/(.*)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
         ],
       },
     ];

@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import ThemeToggle from "@/components/ThemeToggle";
 import MobileBottomNav from "@/components/MobileBottomNav";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300; // 每5分钟重新生成
 
 export const metadata: Metadata = {
   title: "成长时间线 - 晓桃终生成长",
