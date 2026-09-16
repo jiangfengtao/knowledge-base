@@ -222,7 +222,6 @@ export default async function BlogPostPage({
     // 计算当前文章在系列中的位置（从 1 开始）
     currentSeriesIndex =
       seriesPosts.findIndex((p) => p.id === post.id) + 1;
-    }
   }
 
   // 结构化数据
