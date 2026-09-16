@@ -133,7 +133,7 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-2">
             <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-accent/30">
-              桃
+              晓桃
             </div>
             <span className="text-2xl font-bold text-ink">晓桃终生成长</span>
           </div>

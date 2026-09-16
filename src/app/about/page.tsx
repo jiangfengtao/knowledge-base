@@ -128,7 +128,7 @@ export default async function AboutPage() {
             {avatarUrl ? (
               <img src={avatarUrl} alt={blogTitle} className="w-8 h-8 rounded-lg object-cover" />
             ) : (
-              <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-white font-bold">桃</div>
+              <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-white font-bold">晓桃</div>
             )}
             <span className="font-semibold text-ink">{blogTitle}</span>
           </Link>
@@ -154,7 +154,7 @@ export default async function AboutPage() {
               />
             ) : (
               <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-br from-accent to-accent-deep flex items-center justify-center text-white text-5xl font-bold shadow-xl mb-6">
-                桃
+                晓桃
               </div>
             )}
             <h1 className="text-2xl sm:text-4xl font-bold text-ink mb-3">{blogTitle}</h1>

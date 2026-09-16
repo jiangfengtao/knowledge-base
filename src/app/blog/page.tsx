@@ -135,7 +135,7 @@ export default async function BlogHome({
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <Link href="/blog" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-white font-bold">
-              桃
+              晓桃
             </div>
             <span className="font-semibold text-ink">{blogTitle}</span>
           </Link>
@@ -456,7 +456,7 @@ export default async function BlogHome({
                     />
                   ) : (
                     <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center text-white font-bold text-lg">
-                      桃
+                      晓桃
                     </div>
                   )}
                   <div>

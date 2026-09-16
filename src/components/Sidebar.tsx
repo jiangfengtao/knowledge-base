@@ -906,7 +906,7 @@ export default function Sidebar({ activeNav, onNavChange, onKbSelect }: SidebarP
       {/* Logo 区 */}
       <div className="px-4 py-3 flex items-center gap-2 border-b border-rule">
         <div className="w-7 h-7 rounded bg-accent flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-          桃
+          晓桃
         </div>
         <span className="font-semibold text-ink flex-1">晓桃终生成长</span>
         <button
@@ -1133,7 +1133,7 @@ export default function Sidebar({ activeNav, onNavChange, onKbSelect }: SidebarP
             className="w-9 h-9 rounded bg-accent flex items-center justify-center text-white font-bold text-sm hover:bg-accent-2 transition-colors"
             title="展开侧边栏"
           >
-            桃
+            晓桃
           </button>
 
           <div className="h-px w-8 bg-rule" />

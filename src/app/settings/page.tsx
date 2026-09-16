@@ -178,7 +178,7 @@ export default function SettingsPage() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-white font-bold">
-              桃
+              晓桃
             </div>
             <span className="font-semibold text-ink">晓桃终生成长</span>
           </Link>
