@@ -10,6 +10,8 @@ const PUBLIC_API_ROUTES = [
   "/api/webhook",
   "/api/comments",
   "/api/subscribe",
+  "/api/community/posts", // 公开浏览帖子列表
+  "/api/orders/wechat-callback", // 微信支付回调
 ];
 
 // Token 有效期：30 天

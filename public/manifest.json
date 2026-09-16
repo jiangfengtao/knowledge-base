@@ -1,16 +1,18 @@
 {
   "name": "晓桃终生成长",
   "short_name": "晓桃",
-  "description": "个人知识管理与成长系统",
+  "description": "记录一个37岁普通人从零自学英语的真实过程，关于英语学习、个人成长、以及那些让生活更美好的小发现。",
   "id": "/",
   "scope": "/",
-  "start_url": "/",
+  "start_url": "/?source=pwa",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
   "background_color": "#f5f6f7",
   "theme_color": "#00d48f",
   "orientation": "any",
-  "categories": ["productivity", "education"],
+  "categories": ["productivity", "education", "lifestyle"],
+  "lang": "zh-CN",
+  "dir": "ltr",
   "icons": [
     {
       "src": "/icon-192.png",
@@ -40,11 +42,28 @@
   "shortcuts": [
     {
       "name": "博客首页",
-      "url": "/blog"
+      "short_name": "博客",
+      "url": "/blog?source=pwa",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "登录",
-      "url": "/login"
+      "name": "社区",
+      "short_name": "社区",
+      "url": "/community?source=pwa",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "视频",
+      "short_name": "视频",
+      "url": "/videos?source=pwa",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "关于",
+      "short_name": "关于",
+      "url": "/about?source=pwa",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }
-  ]
+  ],
+  "prefer_related_applications": false
 }

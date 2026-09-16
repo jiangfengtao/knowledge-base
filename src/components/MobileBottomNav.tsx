@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Home, Film, User, ArrowLeft, Clock } from "lucide-react";
+import { Home, Film, User, ArrowLeft, Clock, MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 
 /**
@@ -25,8 +25,8 @@ export default function MobileBottomNav() {
 
   const navItems = [
     { href: "/blog", label: "首页", icon: Home },
+    { href: "/community", label: "社区", icon: MessageCircle, match: "/community" },
     { href: "/videos", label: "视频", icon: Film },
-    { href: "/timeline", label: "时间线", icon: Clock, match: "/timeline" },
     { href: "/about", label: "关于", icon: User },
   ];
 
