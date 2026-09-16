@@ -4,6 +4,7 @@ import Link from "next/link";
 import { MessageCircle, Heart, Eye, Pin, Award, Plus, Search } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import NotificationBell from "@/components/NotificationBell";
 import { formatDistanceToNow } from "@/lib/format-date";
 
 export const revalidate = 60; // 每分钟刷新
@@ -65,6 +66,7 @@ export default async function CommunityPage({
             <Link href="/blog" className="hover:text-accent-deep transition-colors hidden sm:inline">博客</Link>
             <Link href="/community" className="text-accent-deep font-medium">社区</Link>
             <Link href="/about" className="hover:text-accent-deep transition-colors hidden sm:inline">关于</Link>
+            <NotificationBell />
             <ThemeToggle />
           </div>
         </div>

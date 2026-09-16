@@ -136,8 +136,8 @@ export default async function AboutPage() {
           </Link>
           <div className="flex items-center gap-4 text-sm text-muted">
             <Link href="/blog" className="hover:text-accent-deep transition-colors hidden sm:inline">博客</Link>
+            <Link href="/community" className="hover:text-accent-deep transition-colors hidden sm:inline">社区</Link>
             <Link href="/videos" className="hover:text-accent-deep transition-colors hidden sm:inline">视频</Link>
-            <Link href="/timeline" className="hover:text-accent-deep transition-colors hidden sm:inline">时间线</Link>
             <Link href="/membership" className="hover:text-accent-deep transition-colors hidden sm:inline">会员</Link>
             <ThemeToggle />
           </div>

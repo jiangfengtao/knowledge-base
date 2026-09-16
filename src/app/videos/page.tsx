@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { getDefaultUser } from "@/lib/user";
 import Link from "next/link";
-import { PlayCircle, Calendar, Clock, History, Tag, Crown, Film, TrendingUp } from "lucide-react";
+import { PlayCircle, Calendar, Clock, History, Tag, Crown, Film, TrendingUp, MessageCircle } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import MobileBottomNav from "@/components/MobileBottomNav";
 
@@ -102,8 +102,19 @@ export default async function VideosPage({
           </Link>
 
           <nav className="flex items-center gap-3 text-sm text-muted">
-            <Link href="/blog" className="hover:text-accent-deep transition-colors">
-              首页
+            <Link
+              href="/blog"
+              className="hover:text-accent-deep transition-colors hidden sm:inline"
+            >
+              博客
+            </Link>
+            <Link
+              href="/community"
+              className="hover:text-accent-deep transition-colors flex items-center gap-1"
+              title="社区"
+            >
+              <MessageCircle size={16} className="sm:hidden" />
+              <span className="hidden sm:inline">社区</span>
             </Link>
             <Link
               href="/videos"

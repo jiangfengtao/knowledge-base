@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { getDefaultUser } from "@/lib/user";
 import Link from "next/link";
-import { Search, Calendar, Clock, BookOpen, History, Tag, Crown, X, PlayCircle, Film, Video, ArrowRight } from "lucide-react";
+import { Search, Calendar, Clock, BookOpen, History, Tag, Crown, X, PlayCircle, Film, Video, ArrowRight, MessageCircle } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import SubscribeBox from "@/components/SubscribeBox";
 import MobileBottomNav from "@/components/MobileBottomNav";
@@ -145,8 +145,13 @@ export default async function BlogHome({
           </Link>
 
           <nav className="flex items-center gap-3 text-sm text-muted">
-            <Link href="/blog" className="hover:text-accent-deep transition-colors">
-              首页
+            <Link
+              href="/community"
+              className="hover:text-accent-deep transition-colors flex items-center gap-1"
+              title="社区"
+            >
+              <MessageCircle size={16} className="sm:hidden" />
+              <span className="hidden sm:inline">社区</span>
             </Link>
             <Link
               href="/videos"
@@ -443,6 +448,24 @@ export default async function BlogHome({
                 </div>
                 <p className="text-xs text-muted leading-relaxed">
                   浏览全部标签，发现更多感兴趣的内容
+                </p>
+              </Link>
+
+              {/* 社区入口 */}
+              <Link
+                href="/community"
+                className="block bg-gradient-to-br from-accent/5 to-accent-soft border border-accent/20 rounded-xl p-5 hover:border-accent/40 hover:shadow-md transition-all group"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
+                    <MessageCircle size={16} className="text-white" />
+                  </div>
+                  <h3 className="font-semibold text-ink group-hover:text-accent-deep transition-colors">
+                    社区
+                  </h3>
+                </div>
+                <p className="text-xs text-muted leading-relaxed">
+                  和晓桃一起学习、交流、成长。发帖讨论、提问答疑
                 </p>
               </Link>
 
