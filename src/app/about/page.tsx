@@ -160,19 +160,32 @@ export default async function AboutPage() {
             <h1 className="text-2xl sm:text-4xl font-bold text-ink mb-3">{blogTitle}</h1>
             <p className="text-muted text-sm sm:text-base max-w-xl leading-relaxed">{blogSubtitle}</p>
             {/* 标签 */}
-            <div className="flex items-center gap-2 mt-5 flex-wrap justify-center">
-              <span className="flex items-center gap-1 px-3 py-1.5 bg-white border border-rule rounded-full text-xs text-muted">
-                <Sparkles size={12} className="text-accent" />
-                终生学习者
-              </span>
-              <span className="flex items-center gap-1 px-3 py-1.5 bg-white border border-rule rounded-full text-xs text-muted">
-                <BookOpen size={12} className="text-accent" />
-                知识分享者
-              </span>
-              <span className="flex items-center gap-1 px-3 py-1.5 bg-white border border-rule rounded-full text-xs text-muted">
-                <TrendingUp size={12} className="text-accent" />
-                自媒体创作者
-              </span>
+            <div className="mt-5 space-y-2">
+              <div className="flex items-center gap-2 flex-wrap justify-center">
+                <span className="flex items-center gap-1 px-3 py-1.5 bg-white border border-rule rounded-full text-xs text-muted">
+                  <Sparkles size={12} className="text-accent" />
+                  终生学习者
+                </span>
+                <span className="flex items-center gap-1 px-3 py-1.5 bg-white border border-rule rounded-full text-xs text-muted">
+                  <BookOpen size={12} className="text-accent" />
+                  知识分享者
+                </span>
+                <span className="flex items-center gap-1 px-3 py-1.5 bg-white border border-rule rounded-full text-xs text-muted">
+                  <TrendingUp size={12} className="text-accent" />
+                  自媒体创作者
+                </span>
+              </div>
+              <div className="flex items-center gap-2 flex-wrap justify-center">
+                <span className="px-3 py-1.5 bg-purple-50 text-purple-600 rounded-full text-xs">
+                  零基础学英语
+                </span>
+                <span className="px-3 py-1.5 bg-amber-50 text-amber-600 rounded-full text-xs">
+                  💡 真实成长记录
+                </span>
+                <span className="px-3 py-1.5 bg-rose-50 text-rose-600 rounded-full text-xs">
+                  ✨ 37岁重新开始
+                </span>
+              </div>
             </div>
           </div>
         </div>
