@@ -188,7 +188,7 @@ export default async function DashboardPage() {
             <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-white font-bold">
               晓桃
             </div>
-            <span className="font-semibold text-ink">晓桃终生成长</span>
+            <span className="font-semibold text-ink">晓桃自学英语</span>
           </Link>
           <nav className="flex items-center gap-3 text-sm text-muted">
             <Link href="/blog" className="hover:text-accent-deep transition-colors">博客</Link>
@@ -504,7 +504,7 @@ export default async function DashboardPage() {
       {/* 页脚 */}
       <footer className="border-t border-rule bg-white mt-8 pb-16 md:pb-8">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 text-center text-sm text-muted">
-          <p>© {new Date().getFullYear()} 晓桃终生成长 · 用知识点亮成长之路</p>
+          <p>© {new Date().getFullYear()} 晓桃自学英语 · 用知识点亮成长之路</p>
           <p className="mt-2 text-xs">Powered by 晓桃知识库系统</p>
         </div>
       </footer>

@@ -20,7 +20,7 @@ export default async function CommunityPostPage({
     where: { userId: defaultUser.id },
   });
 
-  const blogTitle = settings?.blogTitle || "晓桃终生成长";
+  const blogTitle = settings?.blogTitle || "晓桃自学英语";
 
   const post = await prisma.communityPost.findUnique({
     where: { id: params.id },

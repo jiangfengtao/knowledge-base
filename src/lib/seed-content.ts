@@ -539,9 +539,9 @@ export async function seedContentArchitecture() {
     await prisma.userSettings.create({
       data: {
         userId,
-        blogTitle: "晓桃终生成长",
-        blogSubtitle: "记录学习、思考与成长的点滴。关于英语学习、个人成长、以及那些让生活更美好的小发现。",
-        bio: "你好，我是晓桃。一个在终生学习路上的普通人。这里记录我的学习笔记、思考和成长。关于自媒体运营、个人成长、以及那些让生活更美好的小发现。我相信知识的力量，也相信分享的价值。",
+        blogTitle: "晓桃自学英语",
+        blogSubtitle: "学会的不只是英语",
+        bio: "你好，我是晓桃。37岁，从零开始学英语。这里记录我不完美的每一步——计划、卡壳、着急、进步。没有逆袭神话，只有一个普通人真实地在走。学会的不只是英语。",
         avatarUrl: "",
         socialLinks: JSON.stringify({
           wechat: "",

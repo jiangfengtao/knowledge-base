@@ -91,7 +91,7 @@ export default function YuqueSyncPage() {
           <div>
             <h1 className="text-xl font-semibold text-ink">语雀同步设置</h1>
             <p className="text-sm text-muted">
-              将你的语雀知识库同步到晓桃终生成长
+              将你的语雀知识库同步到晓桃自学英语
             </p>
           </div>
         </div>

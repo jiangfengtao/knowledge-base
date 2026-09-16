@@ -1,4 +1,4 @@
-// 晓桃终生成长 - Service Worker (优化版)
+// 晓桃自学英语 - Service Worker (优化版)
 const CACHE_VERSION = "xiaotao-v2";
 const STATIC_CACHE = `xiaotao-static-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `xiaotao-runtime-${CACHE_VERSION}`;

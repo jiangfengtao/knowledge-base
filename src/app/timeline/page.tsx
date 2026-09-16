@@ -8,7 +8,7 @@ import MobileBottomNav from "@/components/MobileBottomNav";
 export const revalidate = 300; // 每5分钟重新生成
 
 export const metadata: Metadata = {
-  title: "成长时间线 - 晓桃终生成长",
+  title: "成长时间线 - 晓桃自学英语",
   description: "记录晓桃从零基础开始的成长历程，一步一个脚印。",
   alternates: { canonical: "https://xiaotaotop.com/timeline" },
 };
@@ -57,7 +57,7 @@ export default async function TimelinePage() {
             <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-white font-bold">
               晓桃
             </div>
-            <span className="font-semibold text-ink">晓桃终生成长</span>
+            <span className="font-semibold text-ink">晓桃自学英语</span>
           </Link>
           <div className="flex items-center gap-3">
             <Link
@@ -168,7 +168,7 @@ export default async function TimelinePage() {
       {/* 页脚 */}
       <footer className="border-t border-rule bg-white pb-16 md:pb-8">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 text-center text-sm text-muted">
-          <p>© {new Date().getFullYear()} 晓桃终生成长 · 用知识点亮成长之路</p>
+          <p>© {new Date().getFullYear()} 晓桃自学英语 · 用知识点亮成长之路</p>
         </div>
       </footer>
 

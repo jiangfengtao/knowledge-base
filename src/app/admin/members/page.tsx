@@ -188,7 +188,7 @@ export default function AdminMembersPage() {
             <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-white font-bold">
               晓桃
             </div>
-            <span className="font-semibold text-ink">晓桃终生成长</span>
+            <span className="font-semibold text-ink">晓桃自学英语</span>
           </Link>
 
           <nav className="flex items-center gap-3 text-sm text-muted">

@@ -353,3 +353,76 @@ html.dark .doc-content code {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* ============================================
+   防抄袭 / 内容保护样式
+   ============================================ */
+
+/* 禁止选中文本（允许输入框/文本域/代码块正常使用） */
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* 允许输入框、文本域、可编辑区域选择 */
+input,
+textarea,
+[contenteditable="true"],
+.ProseMirror,
+.allow-select {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* 禁止图片拖拽 */
+img {
+  -webkit-user-drag: none;
+  -webkit-user-drag: none;
+  user-drag: none;
+  pointer-events: auto;
+}
+
+/* 禁止图片长按保存（移动端） */
+img,
+video {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+}
+
+/* 打印保护 - 打印时隐藏内容 */
+@media print {
+  body {
+    display: none !important;
+  }
+  body::after {
+    content: "本网站内容受版权保护，禁止打印。请访问 xiaotaotop.com 获取正版内容。";
+    display: block !important;
+    font-size: 24px;
+    text-align: center;
+    padding: 100px;
+  }
+}
+
+/* 隐藏页面源码中的敏感注释 */
+/* 生产环境下 Next.js 会自动压缩 CSS */
+
+/* 防止 iframe 嵌套（配合 CSP 使用） */
+html {
+  top: 0;
+}
+
+/* 选中文字时的颜色（提醒版权） */
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+/* 禁用自动填充时的黄色背景 */
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-2) inset;
+}

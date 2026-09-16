@@ -3,44 +3,52 @@ import "@/styles/globals.css";
 import AuthFetchProvider from "@/components/AuthFetchProvider";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import ThemeScript from "@/components/ThemeScript";
+import ContentProtection from "@/components/ContentProtection";
+import InvisibleWatermark from "@/components/InvisibleWatermark";
 
 const SITE_URL = "https://xiaotaotop.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "晓桃终生成长",
-    template: "%s · 晓桃终生成长",
+    default: "晓桃自学英语",
+    template: "%s · 晓桃自学英语",
   },
-  description: "个人知识管理与成长系统 - 记录学习、思考与成长的点滴",
+  description: "学会的不只是英语。一个37岁普通人从零自学英语的真实记录，关于英语、关于成长、关于让生活变好的小发现。",
   manifest: "/manifest.json",
-  keywords: ["知识管理", "个人成长", "自媒体", "学习笔记", "晓桃"],
+  keywords: ["英语学习", "自学英语", "晓桃自学英语", "个人成长", "学习笔记", "晓桃", "37岁学英语", "学会的不只是英语"],
   authors: [{ name: "晓桃" }],
   creator: "晓桃",
+  copyright: "© 2026 晓桃自学英语 (xiaotaotop.com). 保留所有权利。未经授权禁止复制、转载或用于AI训练。",
+  other: {
+    "tdm-reservation": "1",
+    "copyright": "© 2026 xiaotaotop.com",
+    "author": "晓桃",
+  },
   openGraph: {
     type: "website",
     locale: "zh_CN",
     url: SITE_URL,
-    siteName: "晓桃终生成长",
-    title: "晓桃终生成长",
-    description: "个人知识管理与成长系统 - 记录学习、思考与成长的点滴",
+    siteName: "晓桃自学英语",
+    title: "晓桃自学英语",
+    description: "学会的不只是英语。一个37岁普通人从零自学英语的真实记录，关于英语、关于成长、关于让生活变好的小发现。",
     images: [
       {
         url: "/icon-512.png",
         width: 512,
         height: 512,
-        alt: "晓桃终生成长",
+        alt: "晓桃自学英语",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "晓桃终生成长",
-    description: "个人知识管理与成长系统",
+    title: "晓桃自学英语",
+    description: "学会的不只是英语",
   },
   appleWebApp: {
     capable: true,
-    title: "晓桃终生成长",
+    title: "晓桃自学英语",
     statusBarStyle: "default",
   },
   icons: {
@@ -85,6 +93,8 @@ export default function RootLayout({
         <AuthFetchProvider>
           {children}
           <ServiceWorkerRegister />
+          <ContentProtection />
+          <InvisibleWatermark />
         </AuthFetchProvider>
       </body>
     </html>

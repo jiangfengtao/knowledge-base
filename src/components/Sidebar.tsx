@@ -908,7 +908,7 @@ export default function Sidebar({ activeNav, onNavChange, onKbSelect }: SidebarP
         <div className="w-7 h-7 rounded bg-accent flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
           晓桃
         </div>
-        <span className="font-semibold text-ink flex-1">晓桃终生成长</span>
+        <span className="font-semibold text-ink flex-1">晓桃自学英语</span>
         <button
           onClick={() => router.push("/settings")}
           className="p-1.5 hover:bg-[#f2f3f5] rounded transition-colors flex-shrink-0"

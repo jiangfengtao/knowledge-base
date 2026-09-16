@@ -14,7 +14,7 @@ function createWindow() {
     minWidth: 900,
     minHeight: 600,
     backgroundColor: "#f5f6f7",
-    title: "晓桃终生成长",
+    title: "晓桃自学英语",
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,

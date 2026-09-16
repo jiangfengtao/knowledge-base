@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "policy": [
+    {
+      "location": "/",
+      "tdm": "no",
+      "profile": "https://www.w3.org/community/tdmrep/",
+      "text": "本网站所有内容（包括但不限于文章、视频、图片、代码、布局设计）均受版权法保护。未经授权，禁止将本网站内容用于文本和数据挖掘（TDM）、AI 模型训练、机器学习或其他自动化内容提取。版权所有：晓桃自学英语 (xiaotaotop.com)。"
+    }
+  ]
+}

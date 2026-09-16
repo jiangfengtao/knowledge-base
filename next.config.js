@@ -31,6 +31,7 @@ const nextConfig = {
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+          { key: 'X-Permitted-Cross-Domain-Policies', value: 'none' },
           {
             key: 'Strict-Transport-Security',
             value: 'max-age=63072000; includeSubDomains; preload',
@@ -48,6 +49,7 @@ const nextConfig = {
               "object-src 'none'",
               "base-uri 'self'",
               "frame-ancestors 'self'",
+              "form-action 'self'",
             ].join('; '),
           },
           { key: 'X-DNS-Prefetch-Control', value: 'on' },
@@ -66,6 +68,14 @@ const nextConfig = {
   compress: true,
   // Powered-By 头部隐藏
   poweredByHeader: false,
+  // 生产环境关闭 Source Maps（防止源码泄露）
+  productionBrowserSourceMaps: false,
+  // 生产环境移除 console.log（保留 console.error 和 console.warn）
+  compiler: {
+    removeConsole: {
+      exclude: ['error', 'warn'],
+    },
+  },
 };
 
 module.exports = nextConfig;

@@ -43,7 +43,7 @@ export async function generateMetadata({
   }
 
   // 微信分享卡片描述控制在 120 字以内
-  const description = post.plainText.slice(0, 120) || "晓桃终生成长";
+  const description = post.plainText.slice(0, 120) || "晓桃自学英语";
   const articleUrl = `https://xiaotaotop.com/blog/post/${params.id}`;
   const shareImage = "/icon-512.png";
 
@@ -59,7 +59,7 @@ export async function generateMetadata({
       type: "article",
       publishedTime: post.lastModifiedAt.toISOString(),
       url: articleUrl,
-      siteName: "晓桃终生成长",
+      siteName: "晓桃自学英语",
       authors: ["晓桃"],
       images: [
         {
@@ -238,7 +238,7 @@ export default async function BlogPostPage({
     },
     publisher: {
       "@type": "Organization",
-      name: "晓桃终生成长",
+      name: "晓桃自学英语",
     },
     description: post.plainText.slice(0, 200),
     wordCount: post.wordCount,
@@ -280,7 +280,7 @@ export default async function BlogPostPage({
               <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-white font-bold">
                 晓桃
               </div>
-              <span className="font-semibold text-ink hidden sm:inline">晓桃终生成长</span>
+              <span className="font-semibold text-ink hidden sm:inline">晓桃自学英语</span>
             </Link>
           </div>
 
@@ -658,7 +658,7 @@ export default async function BlogPostPage({
       {/* 页脚 */}
       <footer className="border-t border-rule bg-white pb-16 md:pb-8">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 text-center text-sm text-muted">
-          <p>© {new Date().getFullYear()} 晓桃终生成长 · 用知识点亮成长之路</p>
+          <p>© {new Date().getFullYear()} 晓桃自学英语 · 用知识点亮成长之路</p>
           <p className="mt-2 text-xs">
             <Link
               href="/feed.xml"

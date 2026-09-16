@@ -19,10 +19,10 @@ export default async function VideosPage({
     where: { userId: user.id },
   });
 
-  const blogTitle = settings?.blogTitle || "晓桃终生成长";
+  const blogTitle = settings?.blogTitle || "晓桃自学英语";
   const blogSubtitle =
     settings?.blogSubtitle ||
-    "记录学习、思考与成长的点滴。关于英语学习、个人成长、以及那些让生活更美好的小发现。";
+    "学会的不只是英语。";
 
   // 获取视频分类
   const videoKbs = await prisma.knowledgeBase.findMany({

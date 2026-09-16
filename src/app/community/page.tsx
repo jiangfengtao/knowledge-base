@@ -19,7 +19,7 @@ export default async function CommunityPage({
     where: { userId: user.id },
   });
 
-  const blogTitle = settings?.blogTitle || "晓桃终生成长";
+  const blogTitle = settings?.blogTitle || "晓桃自学英语";
   const avatarUrl = settings?.avatarUrl || "";
 
   const type = searchParams?.type || "";

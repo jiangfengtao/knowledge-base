@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "离线模式 - 晓桃终生成长",
+  title: "离线模式 - 晓桃自学英语",
 };
 
 export default function OfflinePage() {

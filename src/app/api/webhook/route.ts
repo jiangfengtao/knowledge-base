@@ -56,7 +56,7 @@ export async function GET(request: Request) {
 
   return NextResponse.json({
     status: "ok",
-    message: "晓桃终生成长 - 消息接收服务运行中",
+    message: "晓桃自学英语 - 消息接收服务运行中",
     webhook: "发送消息到此地址即可自动收录到知识库",
   });
 }

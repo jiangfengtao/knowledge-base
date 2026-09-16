@@ -135,7 +135,7 @@ export default function LoginPage() {
             <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-accent/30">
               晓桃
             </div>
-            <span className="text-2xl font-bold text-ink">晓桃终生成长</span>
+            <span className="text-2xl font-bold text-ink">晓桃自学英语</span>
           </div>
           <p className="text-sm text-muted">个人知识管理与成长系统</p>
         </div>

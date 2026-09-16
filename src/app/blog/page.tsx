@@ -25,10 +25,10 @@ export default async function BlogHome({
     where: { userId: user.id },
   });
 
-  const blogTitle = settings?.blogTitle || "晓桃终生成长";
+  const blogTitle = settings?.blogTitle || "晓桃自学英语";
   const blogSubtitle =
     settings?.blogSubtitle ||
-    "记录一个37岁普通人从零自学英语的真实过程，关于英语学习、个人成长、以及那些让生活更美好的小发现。";
+    "学会的不只是英语。";
   const bio =
     settings?.bio ||
     "你好，我是晓桃。37岁，从零开始学英语。这里记录我不完美的每一步——计划、卡壳、着急、进步。没有逆袭神话，只有一个普通人真实地在走。";
@@ -498,7 +498,7 @@ export default async function BlogHome({
                 <div className="mt-3 space-y-1.5">
                   <div className="flex flex-wrap gap-1.5">
                     <span className="inline-block px-2 py-0.5 bg-accent/10 text-accent-deep text-xs rounded-full">
-                      终生学习者
+                      自学英语中
                     </span>
                     <span className="inline-block px-2 py-0.5 bg-accent/10 text-accent-deep text-xs rounded-full">
                       知识分享者

@@ -64,7 +64,7 @@ export async function POST(request: Request) {
       appid: wechatAppId,
       mch_id: wechatMchId,
       nonce_str: nonceStr,
-      body: `晓桃终生成长 - ${plan.name}`,
+      body: `晓桃自学英语 - ${plan.name}`,
       out_trade_no: orderNo,
       total_fee: String(plan.price),
       spbill_create_ip: "127.0.0.1",

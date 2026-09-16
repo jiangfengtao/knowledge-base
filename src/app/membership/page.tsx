@@ -16,7 +16,7 @@ import MembershipPlans from "./MembershipPlans";
 import { MEMBERSHIP_PLANS } from "@/lib/membership-plans";
 
 export const metadata: Metadata = {
-  title: "加入会员 - 晓桃终生成长",
+  title: "加入会员 - 晓桃自学英语",
   description: "加入晓桃的会员社区，获取完整的学习笔记、成长方法论、独家内容，和晓桃一起终身成长。",
   alternates: { canonical: "https://xiaotaotop.com/membership" },
 };
@@ -44,7 +44,7 @@ export default function MembershipPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <Link href="/blog" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-white font-bold">晓桃</div>
-            <span className="font-semibold text-ink">晓桃终生成长</span>
+            <span className="font-semibold text-ink">晓桃自学英语</span>
           </Link>
           <div className="flex items-center gap-3">
             <Link href="/blog" className="text-sm text-muted hover:text-accent-deep transition-colors hidden sm:inline">博客</Link>

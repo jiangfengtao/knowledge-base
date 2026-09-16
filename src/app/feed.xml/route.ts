@@ -39,9 +39,9 @@ export async function GET() {
   const feed = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>晓桃终生成长</title>
+    <title>晓桃自学英语</title>
     <link>${siteUrl}/blog</link>
-    <description>记录学习、思考与成长的点滴。关于自媒体运营、个人成长、以及那些让生活更美好的小发现。</description>
+    <description>学会的不只是英语。一个37岁普通人从零自学英语的真实记录。</description>
     <language>zh-CN</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <atom:link href="${siteUrl}/feed.xml" rel="self" type="application/rss+xml" />

@@ -26,7 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
     where: { userId: user.id },
   });
 
-  const blogTitle = settings?.blogTitle || "晓桃终生成长";
+  const blogTitle = settings?.blogTitle || "晓桃自学英语";
   return {
     title: `关于 - ${blogTitle}`,
     description: settings?.bio || `关于${blogTitle}`,
@@ -48,13 +48,13 @@ export default async function AboutPage() {
     where: { userId: user.id },
   });
 
-  const blogTitle = settings?.blogTitle || "晓桃终生成长";
+  const blogTitle = settings?.blogTitle || "晓桃自学英语";
   const blogSubtitle =
     settings?.blogSubtitle ||
-    "记录学习、思考与成长的点滴。关于英语学习、个人成长、以及那些让生活更美好的小发现。";
+    "学会的不只是英语。";
   const bio =
     settings?.bio ||
-    "你好，我是晓桃。一个在终生学习路上的普通人。\n这里记录我的学习笔记、思考和成长。关于自媒体运营、个人成长、以及那些让生活更美好的小发现。\n我相信知识的力量，也相信分享的价值。这个博客是我学习和思考的输出窗口，希望这些内容能对你有所帮助。";
+    "你好，我是晓桃。37岁，从零开始学英语。这里记录我不完美的每一步——计划、卡壳、着急、进步。没有逆袭神话，只有一个普通人真实地在走。";
   const avatarUrl = settings?.avatarUrl || "";
 
   // 解析社交链接
@@ -166,7 +166,7 @@ export default async function AboutPage() {
               <div className="flex items-center gap-2 flex-wrap justify-center">
                 <span className="flex items-center gap-1 px-3 py-1.5 bg-white border border-rule rounded-full text-xs text-muted">
                   <Sparkles size={12} className="text-accent" />
-                  终生学习者
+                  自学英语中
                 </span>
                 <span className="flex items-center gap-1 px-3 py-1.5 bg-white border border-rule rounded-full text-xs text-muted">
                   <BookOpen size={12} className="text-accent" />
@@ -358,7 +358,7 @@ export default async function AboutPage() {
             <Award size={32} className="mx-auto text-accent-deep mb-3" />
             <h2 className="text-xl font-semibold text-ink mb-2">加入会员</h2>
             <p className="text-muted text-sm mb-4 max-w-md mx-auto">
-              解锁更多深度教程、私密分享和学习日记，与晓桃一起终生成长
+              加入会员，和晓桃一起学会的不只是英语，更是成长
             </p>
             <Link
               href="/membership"

@@ -42,7 +42,7 @@ export default function BlogPostClient({
       if (selectedText.length < 30) return; // 太短的不追加
 
       const pageUrl = window.location.href;
-      const copyrightText = `\n\n---\n原文来自 晓桃终生成长：${pageUrl}\n作者：晓桃\n保留所有权利`;
+      const copyrightText = `\n\n---\n原文来自 晓桃自学英语：${pageUrl}\n作者：晓桃\n保留所有权利`;
 
       e.preventDefault();
       e.clipboardData?.setData("text/plain", selectedText + copyrightText);
@@ -197,7 +197,7 @@ export default function BlogPostClient({
         // 水印层
         const watermark = document.createElement("div");
         watermark.className = "image-watermark";
-        watermark.textContent = "晓桃终生成长";
+        watermark.textContent = "晓桃自学英语";
         watermark.style.cssText = `
           position: absolute;
           top: 0;
