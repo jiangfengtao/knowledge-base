@@ -211,8 +211,8 @@ export default function CommentSection({ documentId }: { documentId: string }) {
           <div className={replyTo ? "" : "ml-auto"}>
             <button
               type="submit"
-              disabled={submitting || !content.trim() || !nickname.trim()}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-xl text-sm font-medium hover:bg-accent-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={submitting}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-xl text-sm font-medium hover:bg-accent-dark transition-colors disabled:opacity-50"
             >
               <Send className="w-4 h-4" />
               {submitting ? "发送中..." : "发表评论"}
